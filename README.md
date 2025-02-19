@@ -6,9 +6,9 @@ Project for Enterprise Software Engineering Platforms Spring 2025
 Problem: Enterprises need a cost-effective disaster recovery
 solution.
 Solution:
-  •Use Restic or BorgBackup for automated backups.
-  •Store backups in MinIO or Ceph (open-source object storage).
-  •Use Prometheus and Alertmanager for monitoring and alerts.
+  - Use Restic or BorgBackup for automated backups.
+  - Store backups in MinIO or Ceph (open-source object storage).
+  - Use Prometheus and Alertmanager for monitoring and alerts.
 
 
 ## Zillow Data Analyzer for Finding Below-Market Housing Deals
