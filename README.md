@@ -3,8 +3,7 @@ Project for Enterprise Software Engineering Platforms Spring 2025
 
 ## Disaster Recovery and Backup System
 
-Problem: Enterprises need a cost-effective disaster recovery
-solution.
+Problem: Enterprises need a cost-effective backup system and disaster recovery solution to prevent data loss and downtime from system failures.
 
 Solution:
   - Use Restic or BorgBackup for automated backups.
