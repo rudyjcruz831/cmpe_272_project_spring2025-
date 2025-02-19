@@ -12,8 +12,7 @@ Solution:
 
 
 ## Zillow Data Analyzer for Finding Below-Market Housing Deals
-Problem: Homebuyers and real estate investors often struggle to identify the best housing deals in a
-specific area, especially properties listed below market value.
+Problem: Homebuyers and real estate investors often struggle to identify the best housing deals in a specific area, especially properties listed below market value.
 
 Solution:
   •Build a data analysis tool that scrapes and analyzes Zillow data to identify below-market housing deals in a given zip code.
@@ -21,6 +20,7 @@ Solution:
   •Analyze the data using Pandas and NumPy to identify properties listed below market value based on historical price trends, comparable sales, and neighborhood averages.
   •Use Metabase or Superset for visualizing insights and generating reports.
   •Deploy the tool as a web application using Flask or Streamlit for easy access.
+  
 Key Features:
   Data Collection:
     1. Scrape Zillow listings for a specific zip code, including property details like price, square footage, number of bedrooms/bathrooms, and listing date.
