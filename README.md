@@ -10,6 +10,9 @@ Solution:
   - Store backups in MinIO or Ceph (open-source object storage).
   - Use Prometheus and Alertmanager for monitoring and alerts.
 
+### Reflection 
+- Enterprises require a reliable and cost-effective disaster recovery strategy to safeguard critical data and maintain business continuity. This project focuses on automating backups, leveraging scalable storage solutions, and implementing real-time monitoring and alerts. It explores both open-source and cloud-based approaches, including AWS services for backup, storage, and monitoring, to enhance flexibility and scalability. By integrating efficient backup processes with object storage and proactive system monitoring, businesses can minimize data loss and recover quickly from failures. Applicable across industries, this solution provides a resilient and cost-effective approach to disaster recovery, with added reliability when tested with databases like PostgreSQL or Cassandra.
+
 
 ## Zillow Data Analyzer for Finding Below-Market Housing Deals
 Problem: Homebuyers and real estate investors often struggle to identify the best housing deals in a specific area, especially properties listed below market value.
