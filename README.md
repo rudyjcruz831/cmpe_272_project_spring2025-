@@ -35,5 +35,5 @@ Key Features:
   Neighborhood Insights:
     1. Provide insights into neighborhood trends, such as average days on market, price reductions, and demand.
 
-    ### Reflection 
-    - This project uses Zillow data and analytics to help homebuyers and renters understand real estate trends. It gathers property details like prices, sizes, and listing dates through web scraping or the Zillow API. By analyzing market values, it identifies properties priced below the average and compares them with similar recently sold homes. The project also tracks neighborhood trends, such as price changes and demand, to give users a clearer picture of the market. Through data-driven insights, it helps buyers and renters make informed decisions about their next home.
+  ### Reflection 
+  - This project uses Zillow data and analytics to help homebuyers and renters understand real estate trends. It gathers property details like prices, sizes, and listing dates through web scraping or the Zillow API. By analyzing market values, it identifies properties priced below the average and compares them with similar recently sold homes. The project also tracks neighborhood trends, such as price changes and demand, to give users a clearer picture of the market. Through data-driven insights, it helps buyers and renters make informed decisions about their next home.
