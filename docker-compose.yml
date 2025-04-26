@@ -1,0 +1,56 @@
+
+services: 
+   
+    server:
+        container_name: backend
+        build: 
+            context: affordAbode_backend/
+            dockerfile: Dockerfile
+        # restart: always
+        ports: 
+            - 50052:50052
+        env_file:
+            - ./affordAbode_backend/.env # configure postgres
+        depends_on: 
+            - postgresdb
+        networks: 
+            mesh:
+                aliases:
+                    - backend
+    postgresdb:
+        container_name: postgresdb
+        build: 
+            context: postgresdb
+            dockerfile: Dockerfile
+        restart: always
+        ports: 
+            - "5432:5432"
+        env_file:
+            - ./postgresdb/database.env # configure postgres
+        volumes:
+            # - postgres-db-data:/data/db
+            - postgres-db-data2:/data/db
+            # - ./backend_v1/schema.sql:/data/db/schema.sql
+        networks: 
+            mesh:
+                aliases: 
+                    - postgres
+
+    redis:
+        container_name: redis
+        build:
+          context: ./redisdb
+          dockerfile: Dockerfile
+        restart: always
+        ports:
+          - "6379:6379"
+        networks:
+            mesh:
+                aliases:
+                    - redis
+networks:
+    mesh: {}
+volumes:
+    data-db:
+    config-db:
+    postgres-db-data2:
