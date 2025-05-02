@@ -4,12 +4,17 @@ import math
 
 class RedfinSpider(scrapy.Spider):
     name = 'homes'
-    start_urls = ['https://www.redfin.com/city/2673/CA/Campbell/apartments-for-rent']
+    #start_urls = ['https://www.redfin.com/city/2673/CA/Campbell/apartments-for-rent']
 
+
+    def __init__(self, start_url=None, *args, **kwargs):
+        super(RedfinSpider, self).__init__(*args, **kwargs)
+        self.start_url = start_url
 
     def start_requests(self):
         yield SeleniumRequest(
-            url=self.start_urls[0],
+            #url=self.start_urls[0],
+            url=self.start_url,
             callback=self.parse_total_homes,
             wait_time=10 # Wait for JavaScript to load
         )
@@ -26,7 +31,7 @@ class RedfinSpider(scrapy.Spider):
             yield from self.parse(response)
 
             #iterate throught the remaining pages using the URL
-            for page_number in range (1, total_pages + 1):
+            for page_number in range (2, total_pages + 1):
                 page_url = f"https://www.redfin.com/city/2673/CA/Campbell/apartments-for-rent-{page_number}"
                 yield SeleniumRequest(
                     url=page_url,
@@ -41,7 +46,6 @@ class RedfinSpider(scrapy.Spider):
         print(f"Found {len(products)} rental cards on this page.")
 
         for products in response.css('div.HomeCardContainer.flex.justify-center'):
-
 
             raw_text = products.xpath('.//div[contains(@class, "bp-Homecard__Address--address")]//text()').getall()
             address = ''.join(raw_text).replace('\xa0', '').replace('|', '').strip()
@@ -58,7 +62,6 @@ class RedfinSpider(scrapy.Spider):
                     price = ''.join(price_parts).strip()
 
             beds = products.css('span.bp-Homecard__Stats--beds::text').get() or "-"
-            
             baths = products.css('span.bp-Homecard__Stats--baths::text').get() or "-"
             
 
