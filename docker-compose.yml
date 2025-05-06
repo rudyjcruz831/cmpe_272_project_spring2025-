@@ -49,21 +49,24 @@ services:
                 aliases:
                     - redis
 
-    frontend:
-        container_name: frontend
-        build:
-            context: ./v0-untitled-project
-            dockerfile: Dockerfile
-        ports:
-            - "3000:3000"
-        env_file:
-            - ./v0-untitled-project/.env.local
-        depends_on:
-            - server
-        networks:
-            mesh:
-                aliases:
-                    - frontend
+    # frontend:
+    #     container_name: frontend
+    #     build:
+    #         context: ./v0-untitled-project
+    #         dockerfile: Dockerfile
+    #     ports:
+    #         - "3000:3000"
+    #     env_file:
+    #         - ./v0-untitled-project/.env.local
+    #     depends_on:
+    #         - server
+    #     volumes:
+    #         - ./v0-untitled-project:/app
+    #         - /app/node_modules
+    #     networks:
+    #         mesh:
+    #             aliases:
+    #                 - frontend
 networks:
     mesh: {}
 volumes:
