@@ -1,0 +1,22 @@
+[
+  {
+    "budget": "2000",
+    "location": "san jose",
+    "mustHaves": "",
+    "anyOther": "",
+    "institution": "san jose state university",
+    "hobbies": "basketball",
+    "userType": "student",
+    "submittedAt": "2025-05-07T06:28:29.127Z"
+  },
+  {
+    "budget": "2000",
+    "location": "san jose",
+    "mustHaves": "",
+    "anyOther": "",
+    "institution": "san jose state university",
+    "hobbies": "sports",
+    "userType": "student",
+    "submittedAt": "2025-05-07T06:39:09.285Z"
+  }
+]
