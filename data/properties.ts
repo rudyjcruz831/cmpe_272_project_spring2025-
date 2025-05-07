@@ -16,6 +16,7 @@ export interface Property {
   status: "available" | "pending" | "sold"
   features: string[]
   homeUrl: string
+  encodedAddress: number
 }
 
 // Helper functions to extract numeric values from strings
@@ -68,6 +69,9 @@ export const properties: Property[] = rentalListings.map((listing: any, index: n
   const state = addressParts[2]?.trim() || ''
   const location = `${city}, ${state}`
 
+  // Simple address encoding (you might want to use a more sophisticated method)
+  const encodedAddress = index % 20  // Using modulo to keep it within a reasonable range
+
   return {
     id: index.toString(),
     title: listing.address,
@@ -83,6 +87,7 @@ export const properties: Property[] = rentalListings.map((listing: any, index: n
     type: "apartment",
     status: "available",
     features: [],
-    homeUrl: listing.home_url
+    homeUrl: listing.home_url,
+    encodedAddress: encodedAddress
   }
 }) 

@@ -9,6 +9,7 @@ import { SearchBar } from "@/components/ui/search-bar"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { properties, Property } from "@/data/properties"
+import { DealScore } from "@/components/deal-score"
 
 export default function ListingsPage() {
   const [priceRange, setPriceRange] = useState([0, 10000])
@@ -153,6 +154,37 @@ export default function ListingsPage() {
                 placeholder="0"
               />
             </div>
+
+            {/* Score Legend */}
+            <div className="mt-8 pt-6 border-t">
+              <h3 className="text-sm font-semibold mb-3">Deal Score Legend</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-gray-200"></div>
+                  <span>Score pending</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-green-700"></div>
+                  <span>115+ - Exceptional deal</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                  <span>100-115 - Good deal</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-yellow-400"></div>
+                  <span>90-100 - Fair deal</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-orange-500"></div>
+                  <span>75-90 - Mediocre</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-red-500"></div>
+                  <span>&lt;75 - Bad deal</span>
+                </div>
+              </div>
+            </div>
           </Card>
         </div>
 
@@ -165,7 +197,7 @@ export default function ListingsPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentProperties.map((property) => (
-              <Card key={property.id} className="p-4">
+              <Card key={property.id} className="p-4 relative">
                 <div className="aspect-video bg-gray-200 rounded-md mb-4">
                   <img
                     src={property.imageUrl}
@@ -202,6 +234,13 @@ export default function ListingsPage() {
                 >
                   View Source →
                 </a>
+                <DealScore
+                  encodedAddress={property.encodedAddress}
+                  beds={property.bedrooms}
+                  baths={property.bathrooms}
+                  area={property.squareFootage}
+                  price={property.price}
+                />
               </Card>
             ))}
           </div>
