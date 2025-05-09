@@ -10,6 +10,13 @@ import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { properties, Property } from "@/data/properties"
 import { DealScore } from "@/components/deal-score"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export default function ListingsPage() {
   const [priceRange, setPriceRange] = useState([0, 10000])
@@ -20,8 +27,7 @@ export default function ListingsPage() {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState("")
-
-  const itemsPerPage = 9
+  const [itemsPerPage, setItemsPerPage] = useState(12)
 
   const resetFilters = () => {
     setPriceRange([0, 10000])
@@ -267,26 +273,48 @@ export default function ListingsPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 mt-8">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <span className="text-sm">
-                Page {currentPage} of {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+            <div className="flex justify-between items-center mt-8">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-sm">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">Show</span>
+                <Select
+                  value={itemsPerPage.toString()}
+                  onValueChange={(value) => {
+                    setItemsPerPage(Number(value))
+                    setCurrentPage(1) // Reset to first page when changing items per page
+                  }}
+                >
+                  <SelectTrigger className="w-[100px]">
+                    <SelectValue placeholder="12" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="12">12</SelectItem>
+                    <SelectItem value="24">24</SelectItem>
+                    <SelectItem value="48">48</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="text-sm text-gray-500">per page</span>
+              </div>
             </div>
           )}
         </div>
