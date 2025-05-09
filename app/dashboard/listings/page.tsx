@@ -367,13 +367,17 @@ export default function ListingsPage() {
             {/* Roommates Filter */}
             <div className="space-y-2 mt-4">
               <Label>Roommates</Label>
-              <Input
-                type="number"
-                min={0}
-                value={roommates}
-                onChange={(e) => setRoommates(Number(e.target.value))}
-                placeholder="0"
-              />
+              <div className="flex items-center">
+                <span className="text-gray-500 mr-2">1 +</span>
+                <Input
+                  type="number"
+                  min={0}
+                  value={roommates}
+                  onChange={(e) => setRoommates(Number(e.target.value))}
+                  placeholder="0"
+                  className="flex-1"
+                />
+              </div>
             </div>
 
             {/* Reset Button */}
@@ -439,15 +443,19 @@ export default function ListingsPage() {
                 </div>
                 <h3 className="font-semibold">{property.title}</h3>
                 <p className="text-gray-600">
-                  ${Math.round(property.price / (roommates + 1)).toLocaleString()}/mo
-                  {roommates > 0 && (
+                  {roommates > 0 ? (
                     <>
+                      <span className="text-green-600 font-medium">
+                        ${Math.round(property.price / (roommates + 1)).toLocaleString()}/mo
+                      </span>
                       <span className="text-sm text-gray-500"> (per person)</span>
                       <br />
                       <span className="text-sm text-gray-500">
                         Original: ${property.price.toLocaleString()}/mo
                       </span>
                     </>
+                  ) : (
+                    `$${property.price.toLocaleString()}/mo`
                   )}
                 </p>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
