@@ -1122,6 +1122,9 @@ video {
 .w-px {
   width: 1px;
 }
+.w-\[400px\] {
+  width: 400px;
+}
 .min-w-0 {
   min-width: 0px;
 }
@@ -1288,6 +1291,9 @@ video {
 }
 .justify-start {
   justify-content: flex-start;
+}
+.justify-end {
+  justify-content: flex-end;
 }
 .justify-center {
   justify-content: center;

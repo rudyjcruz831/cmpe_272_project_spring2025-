@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 
 const sidebarItems = [
   {
-    title: "Dashboard",
+    title: "Search an Address",
     href: "/dashboard",
     icon: LayoutDashboard,
   },
@@ -19,7 +19,7 @@ const sidebarItems = [
     icon: Building,
   },
   {
-    title: "Questionaire",
+    title: "Questionnaire",
     href: "/dashboard/questionaire",
     icon: Building,
   },

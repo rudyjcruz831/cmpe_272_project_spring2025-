@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { SearchBar } from "@/components/ui/search-bar"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, RotateCw } from "lucide-react"
 import { properties, Property } from "@/data/properties"
 import { DealScore } from "@/components/deal-score"
 import {
@@ -196,24 +196,28 @@ export default function ListingsPage() {
     setSearchQuery(query)
   }
 
+  const resetSearch = () => {
+    setSearchQuery("")
+  }
+
   // Test function for a specific listing
   const testListingScore = async () => {
     const testProperty = {
       id: "test",
-      title: "316 Lynn Ave, Milpitas, CA 95035",
-      description: "2 bedroom, 1.5 bathroom apartment in Milpitas",
-      price: 3100,
-      bedrooms: 2,
-      bathrooms: 1.5,
-      bedroomsDisplay: "2 beds",
-      bathroomsDisplay: "1.5 baths",
-      squareFootage: 976,
-      imageUrl: "https://ssl.cdn-redfin.com/photo/rent/7d1d723c-2865-45c4-91ff-c8c451567b63/islphoto/genIsl.0_1.webp",
-      location: "Milpitas, CA",
+      title: "517 Hope Ter Unit 1, Sunnyvale, CA 94087",
+      description: "3 bedroom, 2 bathroom apartment in Sunnyvale",
+      price: 3825, // Extracted from "$3,825/mo"
+      bedrooms: 3, // Extracted from "3 beds"
+      bathrooms: 2, // Extracted from "2 baths"
+      bedroomsDisplay: "3 beds",
+      bathroomsDisplay: "2 baths",
+      squareFootage: 1200, // Using a reasonable default since it's missing
+      imageUrl: "https://ssl.cdn-redfin.com/photo/rent/5f31c0e1-0108-4995-a2eb-9591b45b68e0/islphoto/genIsl.0_1.webp",
+      location: "Sunnyvale, CA",
       type: "apartment",
       status: "available",
       features: [],
-      homeUrl: "https://www.redfin.com/CA/Milpitas/316-Lynn-Ave-95035/home/1734082",
+      homeUrl: "https://www.redfin.com/CA/Sunnyvale/517-Hope-Ter-94087/unit-1/apartment/195464274",
       encodedAddress: 0 // Using 0 as a test value
     }
 
@@ -262,24 +266,37 @@ export default function ListingsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-4">Rental Listings</h1>
-        <div className="flex gap-4 items-center">
-          <div className="flex-1">
-            <SearchBar onSearch={handleSearch} />
+        <div className="flex items-center">
+          <div className="flex-1"></div>
+          <div className="flex items-center gap-2">
+            <div className="w-[400px]">
+              <SearchBar onSearch={handleSearch} />
+            </div>
+            <Button 
+              variant="outline" 
+              size="icon"
+              onClick={resetSearch}
+              className="h-10 w-10"
+            >
+              <RotateCw className="h-4 w-4" />
+            </Button>
           </div>
-          <Select
-            value={sortBy}
-            onValueChange={setSortBy}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-              <SelectItem value="score-high">Deal Score: High to Low</SelectItem>
-              <SelectItem value="score-low">Deal Score: Low to High</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex-1 flex justify-end">
+            <Select
+              value={sortBy}
+              onValueChange={setSortBy}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="price-low">Price: Low to High</SelectItem>
+                <SelectItem value="price-high">Price: High to Low</SelectItem>
+                <SelectItem value="score-high">Deal Score: High to Low</SelectItem>
+                <SelectItem value="score-low">Deal Score: Low to High</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 
