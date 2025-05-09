@@ -28,6 +28,7 @@ export default function ListingsPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState("")
   const [itemsPerPage, setItemsPerPage] = useState(12)
+  const [sortBy, setSortBy] = useState<string>("")
 
   const resetFilters = () => {
     setPriceRange([0, 10000])
@@ -36,11 +37,12 @@ export default function ListingsPage() {
     setBedrooms(0)
     setRoommates(0)
     setSearchQuery("")
+    setSortBy("")
   }
 
   useEffect(() => {
     // Apply filters
-    const filtered = properties.filter(property => {
+    let filtered = properties.filter(property => {
       const matchesPrice = property.price >= priceRange[0] && property.price <= priceRange[1]
       
       // Handle bedroom range matching
@@ -74,9 +76,23 @@ export default function ListingsPage() {
       return matchesPrice && matchesBathrooms && matchesSquareFootage && matchesBedrooms && matchesSearch
     })
 
+    // Apply sorting
+    if (sortBy) {
+      filtered = [...filtered].sort((a, b) => {
+        switch (sortBy) {
+          case "price-low":
+            return a.price - b.price
+          case "price-high":
+            return b.price - a.price
+          default:
+            return 0
+        }
+      })
+    }
+
     setFilteredProperties(filtered)
     setCurrentPage(1) // Reset to first page when filters change
-  }, [priceRange, bathrooms, squareFootage, bedrooms, searchQuery])
+  }, [priceRange, bathrooms, squareFootage, bedrooms, searchQuery, sortBy])
 
   const totalPages = Math.ceil(filteredProperties.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -91,7 +107,23 @@ export default function ListingsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-4">Property Listings</h1>
-        <SearchBar onSearch={handleSearch} />
+        <div className="flex gap-4 items-center">
+          <div className="flex-1">
+            <SearchBar onSearch={handleSearch} />
+          </div>
+          <Select
+            value={sortBy}
+            onValueChange={setSortBy}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="price-low">Price: Low to High</SelectItem>
+              <SelectItem value="price-high">Price: High to Low</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
