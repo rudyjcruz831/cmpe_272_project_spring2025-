@@ -78,21 +78,21 @@ export function DealScore({ encodedAddress, beds, baths, area, price }: DealScor
   const priceDiff = getPriceDifference()
 
   return (
-    <div className="absolute bottom-4 right-4 flex items-center gap-2">
+    <div className="absolute bottom-6 right-4 flex items-center gap-2">
       {!loading && !error && predictedPrice && (
         <div className="text-xs text-gray-600 bg-white/90 px-2 py-1 rounded">
           <div className="font-medium">
-            ${price.toLocaleString()} vs ${Math.round(predictedPrice).toLocaleString()}
+            Listed: ${price.toLocaleString()} | Expected: ${Math.round(predictedPrice).toLocaleString()}
           </div>
           {priceDiff && (
             <div className={`text-xs ${priceDiff.isHigher ? 'text-green-600' : 'text-red-600'}`}>
-              {priceDiff.isHigher ? '↓' : '↑'} ${priceDiff.amount} ({priceDiff.percent}%)
+              {priceDiff.isHigher ? '↓' : '↑'} ${priceDiff.amount} ({priceDiff.percent}%) difference
             </div>
           )}
         </div>
       )}
       <div 
-        className={`w-6 h-6 rounded-full ${getScoreColor(score)} flex items-center justify-center text-xs font-medium text-white`}
+        className={`w-8 h-8 rounded-full ${getScoreColor(score)} flex items-center justify-center text-xs font-medium text-white`}
         title={error ? "Error calculating score" : loading ? "Calculating score..." : `Deal Score: ${getScoreText(score)}`}
       >
         {getScoreText(score)}

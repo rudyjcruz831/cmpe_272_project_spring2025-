@@ -35,7 +35,7 @@ export function Sidebar() {
           <img 
             src="/afford_abode_long.jpg" 
             alt="Afford Abode Logo" 
-            className="h-12.5 w-auto" 
+            className="h-13 w-auto" 
           />
         </Link>
       </div>
