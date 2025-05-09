@@ -46,19 +46,47 @@ export async function POST(req: Request) {
       answers = [];
     }
 
-    // Add new answer
-    answers.push(answerToSave);
+    // Replace existing answers with new answer
+    answers = [answerToSave];
 
     // Save updated answers
     await fs.writeFile(filePath, JSON.stringify(answers, null, 2));
     
-    return NextResponse.json(
-      { 
-        message: 'Questionnaire submitted successfully',
-        data: answerToSave
-      },
-      { status: 200 }
-    );
+    // Send data to personal recommendations API
+    try {
+      const recommendationsResponse = await fetch('http://localhost:8000/recommend_places', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(answerToSave),
+      });
+
+      if (!recommendationsResponse.ok) {
+        throw new Error('Failed to get recommendations');
+      }
+
+      const recommendations = await recommendationsResponse.json();
+      
+      return NextResponse.json(
+        { 
+          message: 'Questionnaire submitted successfully',
+          data: answerToSave,
+          recommendations: recommendations
+        },
+        { status: 200 }
+      );
+    } catch (error) {
+      console.error('Error getting recommendations:', error);
+      return NextResponse.json(
+        { 
+          message: 'Questionnaire submitted but failed to get recommendations',
+          data: answerToSave,
+          error: 'Failed to get recommendations'
+        },
+        { status: 200 }
+      );
+    }
   } catch (error) {
     console.error('Error processing questionnaire:', error);
     return NextResponse.json(
