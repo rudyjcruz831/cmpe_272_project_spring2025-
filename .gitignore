@@ -26,4 +26,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+#model api
 /model/personal_recs.py
