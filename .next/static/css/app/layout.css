@@ -893,14 +893,14 @@ video {
 .mt-4 {
   margin-top: 1rem;
 }
+.mt-6 {
+  margin-top: 1.5rem;
+}
 .mt-8 {
   margin-top: 2rem;
 }
 .mt-auto {
   margin-top: auto;
-}
-.mt-6 {
-  margin-top: 1.5rem;
 }
 .line-clamp-1 {
   overflow: hidden;
@@ -1098,6 +1098,9 @@ video {
 .w-\[100px\] {
   width: 100px;
 }
+.w-\[180px\] {
+  width: 180px;
+}
 .w-\[1px\] {
   width: 1px;
 }
@@ -1118,9 +1121,6 @@ video {
 }
 .w-px {
   width: 1px;
-}
-.w-\[180px\] {
-  width: 180px;
 }
 .min-w-0 {
   min-width: 0px;

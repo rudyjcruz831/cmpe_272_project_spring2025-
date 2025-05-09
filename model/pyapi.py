@@ -24,7 +24,7 @@ input_name = session.get_inputs()[0].name
 class InputData(BaseModel):
     encoded_address: float
     beds: int
-    baths: int
+    baths: float  # Changed from int to float to accept decimal values
     area: float
     price: float  # User-provided rent
 

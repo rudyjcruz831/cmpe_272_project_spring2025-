@@ -18,17 +18,23 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+interface PropertyWithScore extends Property {
+  dealScore?: number | null;
+  predictedPrice?: number | null;
+}
+
 export default function ListingsPage() {
   const [priceRange, setPriceRange] = useState([0, 10000])
   const [bathrooms, setBathrooms] = useState(0)
   const [squareFootage, setSquareFootage] = useState([0, 10000])
   const [bedrooms, setBedrooms] = useState(0)
   const [roommates, setRoommates] = useState(0)
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
+  const [filteredProperties, setFilteredProperties] = useState<PropertyWithScore[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState("")
   const [itemsPerPage, setItemsPerPage] = useState(12)
   const [sortBy, setSortBy] = useState<string>("")
+  const [isLoadingScores, setIsLoadingScores] = useState(true)
 
   const resetFilters = () => {
     setPriceRange([0, 10000])
@@ -38,6 +44,84 @@ export default function ListingsPage() {
     setRoommates(0)
     setSearchQuery("")
     setSortBy("")
+  }
+
+  // Function to calculate scores for all properties
+  const calculateScores = async (properties: Property[]) => {
+    setIsLoadingScores(true)
+    console.log(`Calculating scores for ${properties.length} properties...`)
+    
+    try {
+      const propertiesWithScores = await Promise.all(
+        properties.map(async (property) => {
+          try {
+            console.log(`Calculating score for property ${property.id}...`)
+            const response = await fetch("http://localhost:8000/predict", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                encoded_address: property.encodedAddress,
+                beds: property.bedrooms,
+                baths: property.bathrooms,
+                area: property.squareFootage,
+                price: property.price
+              }),
+            })
+
+            if (!response.ok) {
+              const errorText = await response.text()
+              console.error(`HTTP error for property ${property.id}:`, {
+                status: response.status,
+                statusText: response.statusText,
+                error: errorText
+              })
+              throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`)
+            }
+
+            const data = await response.json()
+            console.log(`Successfully calculated score for property ${property.id}:`, data)
+            return {
+              ...property,
+              dealScore: data.normalized_score,
+              predictedPrice: data.predicted_price
+            }
+          } catch (err) {
+            console.error(`Error calculating score for property ${property.id}:`, {
+              error: err instanceof Error ? err.message : 'Unknown error',
+              property: {
+                id: property.id,
+                address: property.title,
+                price: property.price,
+                beds: property.bedrooms,
+                baths: property.bathrooms,
+                area: property.squareFootage
+              }
+            })
+            return {
+              ...property,
+              dealScore: null,
+              predictedPrice: null
+            }
+          }
+        })
+      )
+
+      // Log summary of results
+      const successfulScores = propertiesWithScores.filter(p => p.dealScore !== null).length
+      console.log(`Score calculation complete. Results:`, {
+        total: propertiesWithScores.length,
+        successful: successfulScores,
+        failed: propertiesWithScores.length - successfulScores
+      })
+
+      setFilteredProperties(propertiesWithScores)
+    } catch (err) {
+      console.error("Error in calculateScores:", err)
+    } finally {
+      setIsLoadingScores(false)
+    }
   }
 
   useEffect(() => {
@@ -76,23 +160,32 @@ export default function ListingsPage() {
       return matchesPrice && matchesBathrooms && matchesSquareFootage && matchesBedrooms && matchesSearch
     })
 
-    // Apply sorting
-    if (sortBy) {
-      filtered = [...filtered].sort((a, b) => {
-        switch (sortBy) {
-          case "price-low":
-            return a.price - b.price
-          case "price-high":
-            return b.price - a.price
-          default:
-            return 0
-        }
+    // Calculate scores for filtered properties
+    calculateScores(filtered)
+  }, [priceRange, bathrooms, squareFootage, bedrooms, searchQuery])
+
+  // Apply sorting after scores are calculated
+  useEffect(() => {
+    if (!isLoadingScores && sortBy) {
+      setFilteredProperties(prev => {
+        const sorted = [...prev].sort((a, b) => {
+          switch (sortBy) {
+            case "price-low":
+              return a.price - b.price
+            case "price-high":
+              return b.price - a.price
+            case "score-high":
+              return (b.dealScore ?? 0) - (a.dealScore ?? 0)
+            case "score-low":
+              return (a.dealScore ?? 0) - (b.dealScore ?? 0)
+            default:
+              return 0
+          }
+        })
+        return sorted
       })
     }
-
-    setFilteredProperties(filtered)
-    setCurrentPage(1) // Reset to first page when filters change
-  }, [priceRange, bathrooms, squareFootage, bedrooms, searchQuery, sortBy])
+  }, [sortBy, isLoadingScores])
 
   const totalPages = Math.ceil(filteredProperties.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -103,10 +196,72 @@ export default function ListingsPage() {
     setSearchQuery(query)
   }
 
+  // Test function for a specific listing
+  const testListingScore = async () => {
+    const testProperty = {
+      id: "test",
+      title: "316 Lynn Ave, Milpitas, CA 95035",
+      description: "2 bedroom, 1.5 bathroom apartment in Milpitas",
+      price: 3100,
+      bedrooms: 2,
+      bathrooms: 1.5,
+      bedroomsDisplay: "2 beds",
+      bathroomsDisplay: "1.5 baths",
+      squareFootage: 976,
+      imageUrl: "https://ssl.cdn-redfin.com/photo/rent/7d1d723c-2865-45c4-91ff-c8c451567b63/islphoto/genIsl.0_1.webp",
+      location: "Milpitas, CA",
+      type: "apartment",
+      status: "available",
+      features: [],
+      homeUrl: "https://www.redfin.com/CA/Milpitas/316-Lynn-Ave-95035/home/1734082",
+      encodedAddress: 0 // Using 0 as a test value
+    }
+
+    console.log("Testing score calculation for:", testProperty)
+    
+    try {
+      const response = await fetch("http://localhost:8000/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          encoded_address: testProperty.encodedAddress,
+          beds: testProperty.bedrooms,
+          baths: testProperty.bathrooms,
+          area: testProperty.squareFootage,
+          price: testProperty.price
+        }),
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error("HTTP error:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText
+        })
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`)
+      }
+
+      const data = await response.json()
+      console.log("Score calculation result:", data)
+      return data
+    } catch (err) {
+      console.error("Error calculating score:", err)
+      throw err
+    }
+  }
+
+  // Call the test function when the component mounts
+  useEffect(() => {
+    testListingScore().catch(console.error)
+  }, [])
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-4">Property Listings</h1>
+        <h1 className="text-3xl font-bold mb-4">Rental Listings</h1>
         <div className="flex gap-4 items-center">
           <div className="flex-1">
             <SearchBar onSearch={handleSearch} />
@@ -121,6 +276,8 @@ export default function ListingsPage() {
             <SelectContent>
               <SelectItem value="price-low">Price: Low to High</SelectItem>
               <SelectItem value="price-high">Price: High to Low</SelectItem>
+              <SelectItem value="score-high">Deal Score: High to Low</SelectItem>
+              <SelectItem value="score-low">Deal Score: Low to High</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -298,6 +455,8 @@ export default function ListingsPage() {
                   baths={property.bathrooms}
                   area={property.squareFootage}
                   price={property.price}
+                  score={property.dealScore}
+                  predictedPrice={property.predictedPrice}
                 />
               </Card>
             ))}

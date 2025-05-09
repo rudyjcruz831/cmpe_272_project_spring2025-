@@ -1,6 +1,7 @@
 import scrapy
 from scrapy_selenium import SeleniumRequest
 import math
+import re
 
 class RedfinSpider(scrapy.Spider):
     name = 'homes'
@@ -58,7 +59,15 @@ class RedfinSpider(scrapy.Spider):
                     price_parts = products.css('span.bp-Homecard__Price--value span::text').getall()
                     price = ''.join(price_parts).strip()
 
-            beds = products.css('span.bp-Homecard__Stats--beds::text').get() or "-"
+            # Check for beds in both locations
+            beds = products.css('span.bp-Homecard__Stats--beds::text').get()
+            if (not beds) or (beds.strip() == ''):
+                smallest_unit = products.css('div.bp-Homecard__SmallestUnit::text').get()
+                if smallest_unit:
+                    # Extract beds from the smallest unit text if it contains bed information
+                    beds_match = re.search(r'(\d+)\s*bd', smallest_unit, re.IGNORECASE)
+                    beds = beds_match.group(1) if beds_match else "-"
+            beds = beds or "-"
             baths = products.css('span.bp-Homecard__Stats--baths::text').get() or "-"
             
 
