@@ -92,7 +92,7 @@ export function DealScore({ encodedAddress, beds, baths, area, price }: DealScor
         </div>
       )}
       <div 
-        className={`w-8 h-8 rounded-full ${getScoreColor(score)} flex items-center justify-center text-xs font-medium text-white`}
+        className={`w-6 h-6 rounded-full ${getScoreColor(score)} flex items-center justify-center text-xs font-medium text-white`}
         title={error ? "Error calculating score" : loading ? "Calculating score..." : `Deal Score: ${getScoreText(score)}`}
       >
         {getScoreText(score)}
