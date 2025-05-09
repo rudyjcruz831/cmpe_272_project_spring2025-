@@ -23,6 +23,15 @@ export default function ListingsPage() {
 
   const itemsPerPage = 9
 
+  const resetFilters = () => {
+    setPriceRange([0, 10000])
+    setBathrooms(0)
+    setSquareFootage([0, 10000])
+    setBedrooms(0)
+    setRoommates(0)
+    setSearchQuery("")
+  }
+
   useEffect(() => {
     // Apply filters
     const filtered = properties.filter(property => {
@@ -153,6 +162,17 @@ export default function ListingsPage() {
                 onChange={(e) => setRoommates(Number(e.target.value))}
                 placeholder="0"
               />
+            </div>
+
+            {/* Reset Button */}
+            <div className="mt-6">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={resetFilters}
+              >
+                Reset Filters
+              </Button>
             </div>
 
             {/* Score Legend */}
