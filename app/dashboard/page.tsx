@@ -110,14 +110,25 @@ export default function DashboardPage() {
     setIsSearching(true)
     
     try {
-      // Your search logic will go here
-      // For now, we'll simulate a delay
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: query.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Search failed');
+      }
       
       // Navigate to listings page with search query
       router.push(`/dashboard/listings?q=${encodeURIComponent(query)}`)
     } catch (error) {
       console.error('Search error:', error)
+      throw error // Re-throw the error so the SearchBar can handle it
     } finally {
       setIsSearching(false)
     }

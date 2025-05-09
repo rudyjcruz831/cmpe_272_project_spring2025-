@@ -17,10 +17,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet"
 
 interface PropertyWithScore extends Property {
   dealScore?: number | null;
   predictedPrice?: number | null;
+}
+
+// Add utility cost estimation function
+const getUtilityEstimate = (squareFootage: number): { min: number; max: number } => {
+  if (squareFootage < 500) return { min: 150, max: 250 }
+  if (squareFootage < 1000) return { min: 150, max: 250 }
+  if (squareFootage < 1500) return { min: 250, max: 350 }
+  if (squareFootage < 2000) return { min: 350, max: 450 }
+  if (squareFootage < 2500) return { min: 450, max: 550 }
+  return { min: 550, max: 550 }
 }
 
 export default function ListingsPage() {
@@ -35,6 +52,7 @@ export default function ListingsPage() {
   const [itemsPerPage, setItemsPerPage] = useState(12)
   const [sortBy, setSortBy] = useState<string>("")
   const [isLoadingScores, setIsLoadingScores] = useState(true)
+  const [selectedProperty, setSelectedProperty] = useState<PropertyWithScore | null>(null)
 
   const resetFilters = () => {
     setPriceRange([0, 10000])
@@ -433,7 +451,11 @@ export default function ListingsPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentProperties.map((property) => (
-              <Card key={property.id} className="p-4 pb-16 relative">
+              <Card 
+                key={property.id} 
+                className="p-4 pb-16 relative cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => setSelectedProperty(property)}
+              >
                 <div className="aspect-video bg-gray-200 rounded-md mb-4">
                   <img
                     src={property.imageUrl}
@@ -471,6 +493,7 @@ export default function ListingsPage() {
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="mt-4 inline-block text-sm text-blue-600 hover:text-blue-800"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   View Source →
                 </a>
@@ -486,6 +509,177 @@ export default function ListingsPage() {
               </Card>
             ))}
           </div>
+
+          {/* Property Details Sheet */}
+          <Sheet open={!!selectedProperty} onOpenChange={(open) => !open && setSelectedProperty(null)}>
+            <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
+              {selectedProperty && (
+                <>
+                  <SheetHeader>
+                    <SheetTitle>{selectedProperty.title}</SheetTitle>
+                    <SheetDescription>{selectedProperty.location}</SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-6 space-y-6">
+                    <div className="aspect-video bg-gray-200 rounded-md">
+                      <img
+                        src={selectedProperty.imageUrl}
+                        alt={selectedProperty.title}
+                        className="w-full h-full object-cover rounded-md"
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <h4 className="font-medium">Price</h4>
+                        <p className="text-2xl font-bold text-green-600">
+                          ${selectedProperty.price.toLocaleString()}/mo
+                        </p>
+                        {roommates > 0 && (
+                          <p className="text-sm text-gray-500">
+                            ${Math.round(selectedProperty.price / (roommates + 1)).toLocaleString()}/mo per person
+                          </p>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <h4 className="font-medium">Property Details</h4>
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div>
+                            <span className="text-gray-500">Bedrooms:</span>
+                            <span className="ml-2">{selectedProperty.bedroomsDisplay}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">Bathrooms:</span>
+                            <span className="ml-2">{selectedProperty.bathroomsDisplay}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">Square Footage:</span>
+                            <span className="ml-2">{selectedProperty.squareFootage} sqft</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">Type:</span>
+                            <span className="ml-2 capitalize">{selectedProperty.type}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h4 className="font-medium">Description</h4>
+                      <p className="text-gray-600">{selectedProperty.description}</p>
+                    </div>
+
+                    {/* Add new Cost Breakdown section */}
+                    <div className="space-y-4 pt-4 border-t">
+                      <h4 className="font-medium">Cost Breakdown</h4>
+                      
+                      {/* Monthly Rent */}
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">Monthly Rent</span>
+                          <span className="font-medium">${selectedProperty.price.toLocaleString()}/mo</span>
+                        </div>
+                        
+                        {/* Estimated Utilities */}
+                        {(() => {
+                          const utilities = getUtilityEstimate(selectedProperty.squareFootage)
+                          return (
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600">Estimated Utilities</span>
+                              <span className="font-medium">
+                                ${utilities.min.toLocaleString()} - ${utilities.max.toLocaleString()}/mo
+                              </span>
+                            </div>
+                          )
+                        })()}
+                        
+                        {/* Security Deposit */}
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">Security Deposit</span>
+                          <span className="font-medium">${selectedProperty.price.toLocaleString()}</span>
+                        </div>
+                      </div>
+
+                      {/* Lease Options */}
+                      <div className="space-y-3 pt-2">
+                        <h5 className="text-sm font-medium text-gray-700">Lease Options</h5>
+                        
+                        {/* 12 Month Lease */}
+                        <div className="bg-gray-50 p-3 rounded-md">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-sm text-gray-600">12 Month Lease</span>
+                            <span className="font-medium">
+                              ${(selectedProperty.price * 12).toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            Total cost including deposit: ${(selectedProperty.price * 13).toLocaleString()}
+                          </div>
+                        </div>
+                        
+                        {/* 6 Month Lease */}
+                        <div className="bg-gray-50 p-3 rounded-md">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-sm text-gray-600">6 Month Lease</span>
+                            <span className="font-medium">
+                              ${(selectedProperty.price * 6).toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            Total cost including deposit: ${(selectedProperty.price * 7).toLocaleString()}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Monthly Total with Utilities */}
+                      <div className="bg-green-50 p-3 rounded-md mt-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-700">Estimated Monthly Total</span>
+                          {(() => {
+                            const utilities = getUtilityEstimate(selectedProperty.squareFootage)
+                            const total = selectedProperty.price + utilities.max
+                            return (
+                              <span className="font-medium text-green-700">
+                                ${total.toLocaleString()}/mo
+                              </span>
+                            )
+                          })()}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Including rent and maximum estimated utilities
+                        </div>
+                      </div>
+                    </div>
+
+                    {selectedProperty.features && selectedProperty.features.length > 0 && (
+                      <div className="space-y-2">
+                        <h4 className="font-medium">Features</h4>
+                        <ul className="grid grid-cols-2 gap-2">
+                          {selectedProperty.features.map((feature, index) => (
+                            <li key={index} className="flex items-center gap-2">
+                              <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="pt-4">
+                      <a
+                        href={selectedProperty.homeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                      >
+                        View Original Listing
+                      </a>
+                    </div>
+                  </div>
+                </>
+              )}
+            </SheetContent>
+          </Sheet>
 
           {/* Pagination */}
           {totalPages > 1 && (
