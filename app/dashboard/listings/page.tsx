@@ -9,7 +9,7 @@ import { SearchBar } from "@/components/ui/search-bar"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { properties, Property } from "@/data/properties"
-import { DealScore } from "@/components/deal-score"
+// import { DealScore } from "@/components/deal-score"
 
 export default function ListingsPage() {
   const [priceRange, setPriceRange] = useState([0, 10000])
@@ -234,13 +234,13 @@ export default function ListingsPage() {
                 >
                   View Source →
                 </a>
-                <DealScore
+                {/* <DealScore
                   encodedAddress={property.encodedAddress}
                   beds={property.bedrooms}
                   baths={property.bathrooms}
                   area={property.squareFootage}
                   price={property.price}
-                />
+                /> */}
               </Card>
             ))}
           </div>
