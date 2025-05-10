@@ -64,11 +64,24 @@ class RedfinSpider(scrapy.Spider):
             if (not beds) or (beds.strip() == ''):
                 smallest_unit = products.css('div.bp-Homecard__SmallestUnit::text').get()
                 if smallest_unit:
-                    # Extract beds from the smallest unit text if it contains bed information
-                    beds_match = re.search(r'(\d+)\s*bd', smallest_unit, re.IGNORECASE)
-                    beds = beds_match.group(1) if beds_match else "-"
+                    # Check if it's a studio listing
+                    if 'studio' in smallest_unit.lower():
+                        beds = "1 bed"
+                    else:
+                        # Extract beds from the smallest unit text if it contains bed information
+                        beds_match = re.search(r'(\d+)\s*bd', smallest_unit, re.IGNORECASE)
+                        beds = f"{beds_match.group(1)} bed" if beds_match else "-"
             beds = beds or "-"
-            baths = products.css('span.bp-Homecard__Stats--baths::text').get() or "-"
+
+            # Check for baths with studio consideration
+            baths = products.css('span.bp-Homecard__Stats--baths::text').get()
+            if (not baths) or (baths.strip() == ''):
+                smallest_unit = products.css('div.bp-Homecard__SmallestUnit::text').get()
+                if smallest_unit and 'studio' in smallest_unit.lower():
+                    baths = "1 bath"
+                else:
+                    baths = "-"
+            baths = baths or "-"
             
 
             #get the url of the listing

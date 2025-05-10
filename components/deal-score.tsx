@@ -10,49 +10,23 @@ interface DealScoreProps {
   price: number
   score?: number | null
   predictedPrice?: number | null
+  percentDifference?: number | null
 }
 
-export function DealScore({ encodedAddress, beds, baths, area, price, score, predictedPrice }: DealScoreProps) {
+export function DealScore({ encodedAddress, beds, baths, area, price, score, predictedPrice, percentDifference }: DealScoreProps) {
   const [loading, setLoading] = useState(!score)
   const [error, setError] = useState<string | null>(null)
   const [currentScore, setCurrentScore] = useState<number | null>(score ?? null)
   const [currentPredictedPrice, setCurrentPredictedPrice] = useState<number | null>(predictedPrice ?? null)
+  const [currentPercentDifference, setCurrentPercentDifference] = useState<number | null>(percentDifference ?? null)
 
+  // Update local state when props change
   useEffect(() => {
-    if (score === undefined) {
-      const fetchScore = async () => {
-        try {
-          const response = await fetch("http://localhost:8000/predict", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              encoded_address: encodedAddress,
-              beds: beds,
-              baths: baths,
-              area: area,
-              price: price
-            }),
-          })
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`)
-          }
-
-          const data = await response.json()
-          setCurrentScore(data.normalized_score)
-          setCurrentPredictedPrice(data.predicted_price)
-        } catch (err) {
-          setError(err instanceof Error ? err.message : "An error occurred")
-        } finally {
-          setLoading(false)
-        }
-      }
-
-      fetchScore()
-    }
-  }, [encodedAddress, beds, baths, area, price, score])
+    setCurrentScore(score ?? null)
+    setCurrentPredictedPrice(predictedPrice ?? null)
+    setCurrentPercentDifference(percentDifference ?? null)
+    setLoading(!score)
+  }, [score, predictedPrice, percentDifference])
 
   const getScoreColor = (score: number | null) => {
     if (score === null) return "bg-gray-200"
@@ -69,12 +43,11 @@ export function DealScore({ encodedAddress, beds, baths, area, price, score, pre
   }
 
   const getPriceDifference = () => {
-    if (!currentPredictedPrice) return null
+    if (!currentPredictedPrice || currentPercentDifference === null) return null
     const diff = currentPredictedPrice - price
-    const percentDiff = (diff / currentPredictedPrice) * 100
     return {
       amount: Math.abs(Math.round(diff)),
-      percent: Math.abs(Math.round(percentDiff)),
+      percent: Math.abs(Math.round(currentPercentDifference)),
       isHigher: diff > 0
     }
   }

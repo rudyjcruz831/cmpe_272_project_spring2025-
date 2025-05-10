@@ -46,6 +46,11 @@ function extractNumber(str: string): number {
 }
 
 function extractSquareFootage(areaStr: string): number {
+  // Handle case where area is "-"
+  if (areaStr === "-" || areaStr === "- sq ft") {
+    return 0
+  }
+  
   // Remove commas and extract the number before "sq ft"
   const match = areaStr.match(/([\d,]+)\s*sq\s*ft/)
   if (match) {

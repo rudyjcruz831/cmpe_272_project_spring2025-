@@ -28,6 +28,7 @@ import {
 interface PropertyWithScore extends Property {
   dealScore?: number | null;
   predictedPrice?: number | null;
+  percentDifference?: number | null;
 }
 
 // Add utility cost estimation function
@@ -54,6 +55,15 @@ export default function ListingsPage() {
   const [isLoadingScores, setIsLoadingScores] = useState(true)
   const [selectedProperty, setSelectedProperty] = useState<PropertyWithScore | null>(null)
 
+  // Add initial load effect
+  useEffect(() => {
+    console.log("Initial load effect running...")
+    // Calculate scores for all properties on initial load
+    calculateScores(properties).catch(err => {
+      console.error("Error in initial score calculation:", err)
+    })
+  }, []) // Empty dependency array means this runs once on mount
+
   const resetFilters = () => {
     setPriceRange([0, 10000])
     setBathrooms(0)
@@ -70,11 +80,50 @@ export default function ListingsPage() {
     console.log(`Calculating scores for ${properties.length} properties...`)
     
     try {
+      // Test API connection first
+      try {
+        const testResponse = await fetch("http://127.0.0.1:8000/predict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            encoded_address: 0,
+            beds: 2,
+            baths: 2,
+            area: 1000,
+            price: 2000
+          }),
+        })
+        console.log("Test API response status:", testResponse.status)
+        if (!testResponse.ok) {
+          throw new Error(`Test API call failed with status: ${testResponse.status}`)
+        }
+        const testData = await testResponse.json()
+        console.log("Test API response:", testData)
+      } catch (testErr) {
+        console.error("Test API call failed:", testErr)
+        throw new Error("API connection test failed")
+      }
+
       const propertiesWithScores = await Promise.all(
         properties.map(async (property) => {
           try {
-            console.log(`Calculating score for property ${property.id}...`)
-            const response = await fetch("http://localhost:8000/predict", {
+            // Use default values for missing or zero values
+            const areaToUse = property.squareFootage === 0 ? 750 : property.squareFootage;
+            const bathsToUse = property.bathrooms === 0 ? 1 : property.bathrooms;
+            
+            console.log(`Calculating score for property ${property.id}...`, {
+              encoded_address: property.encodedAddress,
+              beds: property.bedrooms,
+              baths: bathsToUse,
+              area: areaToUse,
+              price: property.price,
+              raw_area: property.squareFootage === 0 ? "ZERO_AREA" : property.squareFootage,
+              raw_baths: property.bathrooms === 0 ? "ZERO_BATHS" : property.bathrooms
+            })
+            
+            const response = await fetch("http://127.0.0.1:8000/predict", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -82,28 +131,53 @@ export default function ListingsPage() {
               body: JSON.stringify({
                 encoded_address: property.encodedAddress,
                 beds: property.bedrooms,
-                baths: property.bathrooms,
-                area: property.squareFootage,
+                baths: bathsToUse,
+                area: areaToUse,
                 price: property.price
               }),
             })
 
+            console.log(`Response status for property ${property.id}:`, response.status)
+            
             if (!response.ok) {
               const errorText = await response.text()
               console.error(`HTTP error for property ${property.id}:`, {
                 status: response.status,
                 statusText: response.statusText,
-                error: errorText
+                error: errorText,
+                requestBody: {
+                  encoded_address: property.encodedAddress,
+                  beds: property.bedrooms,
+                  baths: bathsToUse,
+                  area: areaToUse,
+                  price: property.price
+                }
               })
               throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`)
             }
 
             const data = await response.json()
-            console.log(`Successfully calculated score for property ${property.id}:`, data)
+            console.log(`API response for property ${property.id}:`, data)
+            
+            if (!data.normalized_score || !data.predicted_price) {
+              console.error(`Invalid response data for property ${property.id}:`, {
+                data,
+                requestBody: {
+                  encoded_address: property.encodedAddress,
+                  beds: property.bedrooms,
+                  baths: bathsToUse,
+                  area: areaToUse,
+                  price: property.price
+                }
+              })
+              throw new Error("Invalid response data")
+            }
+
             return {
               ...property,
               dealScore: data.normalized_score,
-              predictedPrice: data.predicted_price
+              predictedPrice: data.predicted_price,
+              percentDifference: data.percent_difference
             }
           } catch (err) {
             console.error(`Error calculating score for property ${property.id}:`, {
@@ -120,7 +194,8 @@ export default function ListingsPage() {
             return {
               ...property,
               dealScore: null,
-              predictedPrice: null
+              predictedPrice: null,
+              percentDifference: null
             }
           }
         })
@@ -137,6 +212,13 @@ export default function ListingsPage() {
       setFilteredProperties(propertiesWithScores)
     } catch (err) {
       console.error("Error in calculateScores:", err)
+      // Set all properties to have null scores on error
+      setFilteredProperties(properties.map(property => ({
+        ...property,
+        dealScore: null,
+        predictedPrice: null,
+        percentDifference: null
+      })))
     } finally {
       setIsLoadingScores(false)
     }
@@ -177,6 +259,14 @@ export default function ListingsPage() {
 
       return matchesPrice && matchesBathrooms && matchesSquareFootage && matchesBedrooms && matchesSearch
     })
+
+    // Set filtered properties immediately with null scores
+    setFilteredProperties(filtered.map(property => ({
+      ...property,
+      dealScore: null,
+      predictedPrice: null,
+      percentDifference: null
+    })))
 
     // Calculate scores for filtered properties
     calculateScores(filtered)
@@ -242,7 +332,7 @@ export default function ListingsPage() {
     console.log("Testing score calculation for:", testProperty)
     
     try {
-      const response = await fetch("http://localhost:8000/predict", {
+      const response = await fetch("http://127.0.0.1:8000/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -505,6 +595,7 @@ export default function ListingsPage() {
                   price={property.price}
                   score={property.dealScore}
                   predictedPrice={property.predictedPrice}
+                  percentDifference={property.percentDifference}
                 />
               </Card>
             ))}
