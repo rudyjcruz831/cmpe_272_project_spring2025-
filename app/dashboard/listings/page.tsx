@@ -30,6 +30,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet"
+import RecommendationsComponent from "../api-test/page"
 
 interface PropertyWithScore extends Property {
   dealScore?: number | null;
@@ -379,6 +380,7 @@ export default function ListingsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
+        {/* <div><RecommendationsComponent /></div> */}
         <h1 className="text-3xl font-bold mb-4">Rental Listings</h1>
         <div className="flex items-center">
           <div className="flex-1"></div>
@@ -924,6 +926,7 @@ export default function ListingsPage() {
             </div>
           )}
         </div>
+        
       </div>
     </div>
   )
