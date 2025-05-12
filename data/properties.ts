@@ -10,6 +10,7 @@ export interface Property {
   bedroomsDisplay: string
   bathroomsDisplay: string
   squareFootage: number
+  squareFootageDisplay: string
   imageUrl: string
   location: string
   type: "apartment" | "house" | "condo"
@@ -17,11 +18,12 @@ export interface Property {
   features: string[]
   homeUrl: string
   encodedAddress: number
+  priceDisplay: string
 }
 
 // Helper functions to extract numeric values from strings
 function extractPrice(priceStr: string): number {
-  // Remove currency symbols and convert to number
+  // Remove currency symbols, "+" sign, and convert to number
   const numericStr = priceStr.replace(/[^0-9]/g, '')
   return parseInt(numericStr) || 0
 }
@@ -87,12 +89,14 @@ export const properties: Property[] = rentalListings.map((listing: any, index: n
     bedroomsDisplay: listing.beds,
     bathroomsDisplay: listing.baths,
     squareFootage: squareFootage,
+    squareFootageDisplay: listing.area,
     imageUrl: listing.image_url,
     location: location,
     type: "apartment",
     status: "available",
     features: [],
     homeUrl: listing.home_url,
-    encodedAddress: encodedAddress
+    encodedAddress: encodedAddress,
+    priceDisplay: listing.price
   }
 }) 

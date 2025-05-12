@@ -563,11 +563,11 @@ export default function ListingsPage() {
                       <span className="text-sm text-gray-500"> (per person)</span>
                       <br />
                       <span className="text-sm text-gray-500">
-                        Original: ${property.price.toLocaleString()}/mo
+                        Original: {property.priceDisplay}
                       </span>
                     </>
                   ) : (
-                    `$${property.price.toLocaleString()}/mo`
+                    property.priceDisplay
                   )}
                 </p>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -575,14 +575,13 @@ export default function ListingsPage() {
                   <span>•</span>
                   <span>{property.bathroomsDisplay}</span>
                   <span>•</span>
-                  <span>{property.squareFootage === 0 ? "-" : `${property.squareFootage} sqft`}</span>
+                  <span>{property.squareFootageDisplay}</span>
                 </div>
-                <p className="text-sm text-gray-500 mt-2">{property.location}</p>
                 <a 
                   href={property.homeUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="mt-4 inline-block text-sm text-blue-600 hover:text-blue-800"
+                  className="mt-1 inline-block text-sm text-blue-600 hover:text-blue-800"
                   onClick={(e) => e.stopPropagation()}
                 >
                   View Source →
