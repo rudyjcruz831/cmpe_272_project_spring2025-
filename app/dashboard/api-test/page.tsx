@@ -1,56 +1,77 @@
-"use client"
+import React, { useState } from 'react';
 
-import { useState, useEffect } from "react"
-import { Card } from "@/components/ui/card"
+type Recommendation = {
+  name: string;
+  category: string;
+  description: string;
+  relevance_score: number;
+  relevance_reason: string;
+};
 
-export default function ApiTestPage() {
-  const [message, setMessage] = useState<string>("")
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+const RecommendationsComponent = () => {
+  const [address, setAddress] = useState('');
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchHelloWorld = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/")
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-        const data = await response.json()
-        setMessage(data.message)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred")
-      } finally {
-        setLoading(false)
+  const fetchRecommendations = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/reccomendations',
+        {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ address, radius: 0 }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-    }
 
-    fetchHelloWorld()
-  }, [])
+      const data = await response.json();
+      setRecommendations(data.places);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('Error fetching recommendations:', error);
+    }
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">API Test Page</h1>
-      
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Hello World API Response</h2>
-        
-        {loading && (
-          <p className="text-gray-600">Loading...</p>
-        )}
-        
-        {error && (
-          <div className="text-red-500">
-            <p className="font-semibold">Error:</p>
-            <p>{error}</p>
+    <div>
+      <h1>Get Place Recommendations</h1>
+      <input
+        type="text"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        placeholder="Enter your address"
+      />
+      <button onClick={fetchRecommendations}>Get Recommendations</button>
+
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Recommendations</h2>
+            <button onClick={() => setIsModalOpen(false)}>Close</button>
+            <ul>
+              {Array.isArray(recommendations) && recommendations.length > 0 ? (
+                recommendations.map((place, index) => (
+                  <li key={index}>
+                    <h3>{place.name || 'Unknown Name'}</h3>
+                    <p>Category: {place.category || 'Unknown Category'}</p>
+                    <p>Description: {place.description || 'No Description Available'}</p>
+                    <p>Relevance Score: {place.relevance_score || 'N/A'}</p>
+                    <p>Reason: {place.relevance_reason || 'No Reason Provided'}</p>
+                  </li>
+                ))
+              ) : (
+                <li>No recommendations available</li>
+              )}
+            </ul>
           </div>
-        )}
-        
-        {!loading && !error && (
-          <div className="bg-gray-50 p-4 rounded-md">
-            <p className="text-gray-800">{message}</p>
-          </div>
-        )}
-      </Card>
+        </div>
+      )}
     </div>
-  )
-} 
+  );
+};
+
+export default RecommendationsComponent;
