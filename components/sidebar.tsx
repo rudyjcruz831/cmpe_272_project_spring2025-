@@ -47,7 +47,10 @@ export function Sidebar() {
               <Button
                 key={item.href}
                 variant={pathname === item.href ? "secondary" : "ghost"}
-                className={cn("w-full justify-start", pathname === item.href && "bg-secondary")}
+                className={cn(
+                  "w-full justify-start hover:bg-[#E5E0D5] hover:text-black",
+                  pathname === item.href && "bg-[#E5E0D5] text-black"
+                )}
                 asChild
               >
                 <Link href={item.href}>

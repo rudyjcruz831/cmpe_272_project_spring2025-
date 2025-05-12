@@ -423,7 +423,7 @@ export default function ListingsPage() {
                 step={100}
                 value={priceRange}
                 onValueChange={setPriceRange}
-                className="w-full"
+                className="w-full [&>div>div]:!bg-[#8A9969]"
               />
               <div className="flex justify-between text-sm text-gray-500">
                 <span>${priceRange[0].toLocaleString()}</span>
@@ -464,7 +464,7 @@ export default function ListingsPage() {
                 step={100}
                 value={squareFootage}
                 onValueChange={setSquareFootage}
-                className="w-full"
+                className="w-full [&>div>div]:!bg-[#8A9969]"
               />
               <div className="flex justify-between text-sm text-gray-500">
                 <span>{squareFootage[0]} sqft</span>

@@ -66,7 +66,7 @@ export function DealScore({ encodedAddress, beds, baths, area, price, score, pre
   return (
     <div className="absolute bottom-0 right-4 flex items-center gap-2">
       {!loading && !error && currentPredictedPrice && (
-        <div className="text-xs text-gray-600 bg-white/90 px-2 py-1 rounded">
+        <div className="text-xs text-gray-600 bg-card/90 px-2 py-1 rounded">
           <div className="font-medium">
             Similar Listings: ${Math.round(currentPredictedPrice).toLocaleString()} | This Listing: ${price.toLocaleString()}
           </div>
