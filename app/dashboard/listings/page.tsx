@@ -78,11 +78,12 @@ export default function ListingsPage() {
   // Function to calculate scores for all properties
   const calculateScores = async (properties: Property[]) => {
     setIsLoadingScores(true)
-    console.log(`Calculating scores for ${properties.length} properties...`)
+    console.log(`Starting score calculation for ${properties.length} properties...`)
     
     try {
       // Test API connection first
       try {
+        console.log("Testing API connection...")
         const testResponse = await fetch("http://127.0.0.1:8000/predict", {
           method: "POST",
           headers: {
@@ -107,6 +108,7 @@ export default function ListingsPage() {
         throw new Error("API connection test failed")
       }
 
+      console.log("Starting batch score calculation...")
       const propertiesWithScores = await Promise.all(
         properties.map(async (property) => {
           try {
@@ -114,14 +116,12 @@ export default function ListingsPage() {
             const areaToUse = property.squareFootage === 0 ? 750 : property.squareFootage;
             const bathsToUse = property.bathrooms === 0 ? 1 : property.bathrooms;
             
-            console.log(`Calculating score for property ${property.id}...`, {
+            console.log(`Calculating score for property ${property.id}:`, {
               encoded_address: property.encodedAddress,
               beds: property.bedrooms,
               baths: bathsToUse,
               area: areaToUse,
-              price: property.price,
-              raw_area: property.squareFootage === 0 ? "ZERO_AREA" : property.squareFootage,
-              raw_baths: property.bathrooms === 0 ? "ZERO_BATHS" : property.bathrooms
+              price: property.price
             })
             
             const response = await fetch("http://127.0.0.1:8000/predict", {
@@ -595,6 +595,9 @@ export default function ListingsPage() {
                   baths={property.bathrooms}
                   area={property.squareFootage}
                   price={property.price}
+                  score={property.dealScore}
+                  predictedPrice={property.predictedPrice}
+                  percentDifference={property.percentDifference}
                 />
               </Card>
             ))}
