@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 
 const sidebarItems = [
   {
-    title: "Dashboard",
+    title: "Search an Address",
     href: "/dashboard",
     icon: LayoutDashboard,
   },
@@ -19,7 +19,7 @@ const sidebarItems = [
     icon: Building,
   },
   {
-    title: "Questionaire",
+    title: "Questionnaire",
     href: "/dashboard/questionaire",
     icon: Building,
   },
@@ -35,7 +35,7 @@ export function Sidebar() {
           <img 
             src="/afford_abode_long.jpg" 
             alt="Afford Abode Logo" 
-            className="h-12.5 w-auto" 
+            className="h-13 w-auto" 
           />
         </Link>
       </div>

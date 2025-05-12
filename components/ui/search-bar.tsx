@@ -20,7 +20,12 @@ export function SearchBar({ onSearch }: SearchBarProps) {
     e.preventDefault()
     if (searchQuery.trim()) {
       if (onSearch) {
-        onSearch(searchQuery.trim())
+        setIsLoading(true)
+        try {
+          await onSearch(searchQuery.trim())
+        } finally {
+          setIsLoading(false)
+        }
       } else {
         try {
           setIsLoading(true)
