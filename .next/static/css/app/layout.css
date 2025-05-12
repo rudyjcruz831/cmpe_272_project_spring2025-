@@ -812,6 +812,9 @@ video {
 .z-\[1\] {
   z-index: 1;
 }
+.col-span-2 {
+  grid-column: span 2 / span 2;
+}
 .-mx-1 {
   margin-left: -0.25rem;
   margin-right: -0.25rem;
@@ -922,6 +925,9 @@ video {
 }
 .grid {
   display: grid;
+}
+.inline-grid {
+  display: inline-grid;
 }
 .hidden {
   display: none;
@@ -1200,6 +1206,9 @@ video {
 .border-collapse {
   border-collapse: collapse;
 }
+.origin-left {
+  transform-origin: left;
+}
 .-translate-x-1\/2 {
   --tw-translate-x: -50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
@@ -1230,6 +1239,16 @@ video {
 }
 .rotate-90 {
   --tw-rotate: 90deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.scale-125 {
+  --tw-scale-x: 1.25;
+  --tw-scale-y: 1.25;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.scale-150 {
+  --tw-scale-x: 1.5;
+  --tw-scale-y: 1.5;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .transform {
@@ -1276,6 +1295,9 @@ video {
 }
 .grid-cols-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.grid-cols-\[auto_auto\] {
+  grid-template-columns: auto auto;
 }
 .flex-row {
   flex-direction: row;
@@ -1328,6 +1350,12 @@ video {
 .gap-6 {
   gap: 1.5rem;
 }
+.gap-x-2 {
+  column-gap: 0.5rem;
+}
+.gap-y-1 {
+  row-gap: 0.25rem;
+}
 .space-x-1 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(0.25rem * var(--tw-space-x-reverse));
@@ -1377,6 +1405,16 @@ video {
   --tw-space-y-reverse: 0;
   margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(2rem * var(--tw-space-y-reverse));
+}
+.space-y-5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.25rem * var(--tw-space-y-reverse));
+}
+.space-y-0 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0px * var(--tw-space-y-reverse));
 }
 .overflow-auto {
   overflow: auto;
@@ -1744,6 +1782,9 @@ video {
 }
 .text-center {
   text-align: center;
+}
+.text-right {
+  text-align: right;
 }
 .align-middle {
   vertical-align: middle;
@@ -2284,6 +2325,11 @@ body {
   background-color: rgb(254 249 195 / 0.8);
 }
 
+.hover\:bg-\[\#D5D0C5\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(213 208 197 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:text-accent-foreground:hover {
   color: hsl(var(--accent-foreground));
 }
@@ -2358,12 +2404,22 @@ body {
   background-color: hsl(var(--primary));
 }
 
+.focus\:bg-\[\#D5D0C5\]:focus {
+  --tw-bg-opacity: 1;
+  background-color: rgb(213 208 197 / var(--tw-bg-opacity, 1));
+}
+
 .focus\:text-accent-foreground:focus {
   color: hsl(var(--accent-foreground));
 }
 
 .focus\:text-primary-foreground:focus {
   color: hsl(var(--primary-foreground));
+}
+
+.focus\:text-black:focus {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity, 1));
 }
 
 .focus\:opacity-100:focus {
@@ -2730,6 +2786,11 @@ body {
   background-color: hsl(var(--input));
 }
 
+.data-\[state\=open\]\:bg-\[\#D5D0C5\][data-state="open"] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(213 208 197 / var(--tw-bg-opacity, 1));
+}
+
 .data-\[active\=true\]\:font-medium[data-active="true"] {
   font-weight: 500;
 }
@@ -2761,6 +2822,11 @@ body {
 
 .data-\[state\=open\]\:text-muted-foreground[data-state="open"] {
   color: hsl(var(--muted-foreground));
+}
+
+.data-\[state\=open\]\:text-black[data-state="open"] {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity, 1));
 }
 
 .data-\[disabled\=true\]\:opacity-50[data-disabled="true"] {

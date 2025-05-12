@@ -646,18 +646,81 @@ export default function ListingsPage() {
                             <span className="text-gray-500">Square Footage:</span>
                             <span className="ml-2">{selectedProperty.squareFootage} sqft</span>
                           </div>
-                          <div>
-                            <span className="text-gray-500">Type:</span>
-                            <span className="ml-2 capitalize">{selectedProperty.type}</span>
-                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <h4 className="font-medium">Description</h4>
-                      <p className="text-gray-600">{selectedProperty.description}</p>
+                    {/* Deal Analysis Section (Inline-Grid, Tight) */}
+                    <div className="border-t pt-3">
+                      <h4 className="font-medium text-sm">Deal Analysis:</h4>
+
+                      <div
+                        className="
+                          mt-1 inline-grid grid
+                          grid-cols-[auto_auto]
+                          gap-x-2 gap-y-1
+                          bg-white p-2 rounded-lg shadow-sm text-xs
+                        "
+                      >
+                        {/* Row 1 */}
+                        <span>Similar Listings:</span>
+                        <span className="text-right">
+                          ${selectedProperty.predictedPrice?.toLocaleString() ?? "—"}
+                        </span>
+
+                        {/* Row 2 */}
+                        <span>This Listing:</span>
+                        <span className="text-right">
+                          ${selectedProperty.price.toLocaleString()}
+                        </span>
+
+                        {/* Row 3 */}
+                        <span className="text-red-600">Difference:</span>
+                        <span className="text-right text-red-600">
+                          ↑ $
+                          {Math.abs(
+                            selectedProperty.price - (selectedProperty.predictedPrice ?? 0)
+                          ).toLocaleString()}{" "}
+                          ({selectedProperty.percentDifference?.toFixed(0) ?? "—"}%)
+                        </span>
+
+                        {/* Badge */}
+                        <div className="col-span-2 flex justify-center pt-1">
+                          <span
+                            className={`
+                              inline-block px-2 py-0.5 rounded-full text-white
+                              ${
+                                (selectedProperty.dealScore ?? 0) < 75
+                                  ? "bg-red-500"
+                                  : (selectedProperty.dealScore ?? 0) < 90
+                                  ? "bg-orange-500"
+                                  : (selectedProperty.dealScore ?? 0) < 100
+                                  ? "bg-yellow-400"
+                                  : (selectedProperty.dealScore ?? 0) < 115
+                                  ? "bg-green-500"
+                                  : "bg-green-700"
+                              }
+                            `}
+                          >
+                            {selectedProperty.dealScore != null
+                              ? selectedProperty.dealScore < 75
+                                ? "Bad deal"
+                                : selectedProperty.dealScore < 90
+                                ? "Mediocre"
+                                : selectedProperty.dealScore < 100
+                                ? "Fair deal"
+                                : selectedProperty.dealScore < 115
+                                ? "Good deal"
+                                : "Exceptional"
+                              : "Pending"}
+                          </span>
+                        </div>
+                      </div>
                     </div>
+
+
+
+
 
                     {/* Add new Cost Breakdown section */}
                     <div className="space-y-4 pt-4 border-t">
