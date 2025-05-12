@@ -61,7 +61,7 @@ export function SearchBar({ onSearch }: SearchBarProps) {
       <div className="relative flex items-center">
         <Input
           type="text"
-          placeholder="Search properties..."
+          placeholder="Search a City, Zipcode, or Neighborhood"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full pr-12"

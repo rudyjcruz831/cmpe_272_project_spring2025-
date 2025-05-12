@@ -400,8 +400,8 @@ export default function ListingsPage() {
               <SelectContent>
                 <SelectItem value="price-low">Price: Low to High</SelectItem>
                 <SelectItem value="price-high">Price: High to Low</SelectItem>
-                <SelectItem value="score-high">Deal Score: High to Low</SelectItem>
-                <SelectItem value="score-low">Deal Score: Low to High</SelectItem>
+                <SelectItem value="score-high">Listing Score: High to Low</SelectItem>
+                <SelectItem value="score-low">Listing Score: Low to High</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -575,7 +575,7 @@ export default function ListingsPage() {
                   <span>•</span>
                   <span>{property.bathroomsDisplay}</span>
                   <span>•</span>
-                  <span>{property.squareFootage} sqft</span>
+                  <span>{property.squareFootage === 0 ? "-" : `${property.squareFootage} sqft`}</span>
                 </div>
                 <p className="text-sm text-gray-500 mt-2">{property.location}</p>
                 <a 

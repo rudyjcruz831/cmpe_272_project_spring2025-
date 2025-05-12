@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 
 const sidebarItems = [
   {
-    title: "Search an Address",
+    title: "Search an Area",
     href: "/dashboard",
     icon: LayoutDashboard,
   },
@@ -41,7 +41,7 @@ export function Sidebar() {
       </div>
       <div className="py-4">
         <div className="px-4 py-2">
-          <h2 className="px-2 mb-2 text-xs font-semibold tracking-tight text-muted-foreground">MANAGEMENT</h2>
+          <h2 className="px-2 mb-2 text-xs font-semibold tracking-tight text-muted-foreground">EXPLORE</h2>
           <div className="space-y-1">
             {sidebarItems.map((item) => (
               <Button

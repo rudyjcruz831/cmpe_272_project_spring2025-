@@ -42,6 +42,15 @@ export function DealScore({ encodedAddress, beds, baths, area, price, score, pre
     return Math.round(score)
   }
 
+  const getDealQuality = (score: number | null) => {
+    if (score === null) return "Calculating..."
+    if (score >= 115) return "Exceptional deal"
+    if (score >= 100) return "Good deal"
+    if (score >= 90) return "Fair deal"
+    if (score >= 75) return "Mediocre"
+    return "Bad deal"
+  }
+
   const getPriceDifference = () => {
     if (!currentPredictedPrice || currentPercentDifference === null) return null
     const diff = currentPredictedPrice - price
@@ -55,21 +64,24 @@ export function DealScore({ encodedAddress, beds, baths, area, price, score, pre
   const priceDiff = getPriceDifference()
 
   return (
-    <div className="absolute bottom-6 right-4 flex items-center gap-2">
+    <div className="absolute bottom-0 right-4 flex items-center gap-2">
       {!loading && !error && currentPredictedPrice && (
         <div className="text-xs text-gray-600 bg-white/90 px-2 py-1 rounded">
           <div className="font-medium">
-            Listed: ${price.toLocaleString()} | Expected: ${Math.round(currentPredictedPrice).toLocaleString()}
+            Similar Listings: ${Math.round(currentPredictedPrice).toLocaleString()} | This Listing: ${price.toLocaleString()}
           </div>
           {priceDiff && (
             <div className={`text-xs ${priceDiff.isHigher ? 'text-green-600' : 'text-red-600'}`}>
               {priceDiff.isHigher ? '↓' : '↑'} ${priceDiff.amount} ({priceDiff.percent}%) difference
             </div>
           )}
+          <div className={`text-xs mt-1 ${currentScore === null ? 'text-gray-600' : 'text-white'} ${getScoreColor(currentScore)} px-2 py-0.5 rounded-full inline-block`}>
+            {getDealQuality(currentScore)}
+          </div>
         </div>
       )}
       <div 
-        className={`w-8 h-8 rounded-full ${getScoreColor(currentScore)} flex items-center justify-center text-xs font-medium text-white`}
+        className={`w-9 h-9 rounded-full ${getScoreColor(currentScore)} flex items-center justify-center text-xs font-medium text-white`}
         title={error ? "Error calculating score" : loading ? "Calculating score..." : `Listing Score: ${getScoreText(currentScore)}`}
       >
         {getScoreText(currentScore)}
