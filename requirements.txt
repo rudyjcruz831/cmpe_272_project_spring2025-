@@ -1,0 +1,6 @@
+selenium
+webdriver-manager
+onnxruntime
+numpy
+fastapi
+uvicorn

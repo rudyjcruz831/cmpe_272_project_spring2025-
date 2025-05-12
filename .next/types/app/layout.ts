@@ -1,4 +1,4 @@
-// File: C:\Users\sandh\Documents\College work\CMPE 272 Coding\finalproject\app\layout.tsx
+// File: /Users/rudy/Desktop/Rudy-macbook/CMPE_272_Spring2025/cmpe_272_project_spring2025-/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

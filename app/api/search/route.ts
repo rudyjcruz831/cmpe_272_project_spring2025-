@@ -20,8 +20,6 @@ export async function POST(request: Request) {
 
     const scrapyProjectPath = path.join(process.cwd(), 'redfinscraper');
 
-    const pythonProcess = spawn('python', [scriptPath, sanitizedQuery, outputPath, scrapyProjectPath]);
-
     // Log for debugging
     console.log('Running Python script with:');
     console.log('Search query:', sanitizedQuery);
