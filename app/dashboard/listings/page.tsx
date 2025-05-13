@@ -11,6 +11,12 @@ import { ChevronLeft, ChevronRight, RotateCw } from "lucide-react"
 import { properties, Property } from "@/data/properties"
 import { DealScore } from "@/components/deal-score"
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -649,72 +655,109 @@ export default function ListingsPage() {
                         </div>
                       </div>
                     </div>
-
-                    {/* Deal Analysis Section (Inline-Grid, Tight) */}
+                    {/* Deal Analysis Section */}
                     <div className="border-t pt-3">
-                      <h4 className="font-medium text-sm">Deal Analysis:</h4>
+                      <h4 className="font-medium text-base">Deal Analysis:</h4>
 
-                      <div
-                        className="
-                          mt-1 inline-grid grid
-                          grid-cols-[auto_auto]
-                          gap-x-2 gap-y-1
-                          bg-white p-2 rounded-lg shadow-sm text-xs
-                        "
-                      >
-                        {/* Row 1 */}
-                        <span>Similar Listings:</span>
-                        <span className="text-right">
-                          ${selectedProperty.predictedPrice?.toLocaleString() ?? "—"}
-                        </span>
-
-                        {/* Row 2 */}
-                        <span>This Listing:</span>
-                        <span className="text-right">
-                          ${selectedProperty.price.toLocaleString()}
-                        </span>
-
-                        {/* Row 3 */}
-                        <span className="text-red-600">Difference:</span>
-                        <span className="text-right text-red-600">
-                          ↑ $
-                          {Math.abs(
-                            selectedProperty.price - (selectedProperty.predictedPrice ?? 0)
-                          ).toLocaleString()}{" "}
-                          ({selectedProperty.percentDifference?.toFixed(0) ?? "—"}%)
-                        </span>
-
-                        {/* Badge */}
-                        <div className="col-span-2 flex justify-center pt-1">
-                          <span
-                            className={`
-                              inline-block px-2 py-0.5 rounded-full text-white
-                              ${
-                                (selectedProperty.dealScore ?? 0) < 75
-                                  ? "bg-red-500"
-                                  : (selectedProperty.dealScore ?? 0) < 90
-                                  ? "bg-orange-500"
-                                  : (selectedProperty.dealScore ?? 0) < 100
-                                  ? "bg-yellow-400"
-                                  : (selectedProperty.dealScore ?? 0) < 115
-                                  ? "bg-green-500"
-                                  : "bg-green-700"
-                              }
-                            `}
-                          >
-                            {selectedProperty.dealScore != null
-                              ? selectedProperty.dealScore < 75
-                                ? "Bad deal"
-                                : selectedProperty.dealScore < 90
-                                ? "Mediocre"
-                                : selectedProperty.dealScore < 100
-                                ? "Fair deal"
-                                : selectedProperty.dealScore < 115
-                                ? "Good deal"
-                                : "Exceptional"
-                              : "Pending"}
+                      <div className="mt-1 flex items-start">
+                        {/* Inline table */}
+                        <div
+                          className="
+                            inline-grid grid
+                            grid-cols-[auto_auto]
+                            gap-x-2 gap-y-1
+                            bg-white p-2 rounded-lg shadow-sm text-sm
+                          "
+                        >
+                          <span>Similar Listings:</span>
+                          <span className="text-right">
+                            ${selectedProperty.predictedPrice?.toLocaleString() ?? "—"}
                           </span>
+
+                          <span>This Listing:</span>
+                          <span className="text-right">
+                            ${selectedProperty.price.toLocaleString()}
+                          </span>
+
+                          <span className="text-red-600">Difference:</span>
+                          <span className="text-right text-red-600">
+                            ↑ $
+                            {Math.abs(
+                              selectedProperty.price - (selectedProperty.predictedPrice ?? 0)
+                            ).toLocaleString()}{" "}
+                            ({selectedProperty.percentDifference?.toFixed(0) ?? "—"}%)
+                          </span>
+
+                          {/* Badge spanning two columns */}
+                          <div className="col-span-2 flex justify-center pt-1">
+                            <span
+                              className={`
+                                inline-block px-2 py-0.5 rounded-full text-white text-[0.6rem]
+                                ${
+                                  (selectedProperty.dealScore ?? 0) < 75
+                                    ? "bg-red-500"
+                                    : (selectedProperty.dealScore ?? 0) < 90
+                                    ? "bg-orange-500"
+                                    : (selectedProperty.dealScore ?? 0) < 100
+                                    ? "bg-yellow-400"
+                                    : (selectedProperty.dealScore ?? 0) < 115
+                                    ? "bg-green-500"
+                                    : "bg-green-700"
+                                }
+                              `}
+                            >
+                              {selectedProperty.dealScore != null
+                                ? selectedProperty.dealScore < 75
+                                  ? "Bad deal"
+                                  : selectedProperty.dealScore < 90
+                                  ? "Mediocre"
+                                  : selectedProperty.dealScore < 100
+                                  ? "Fair deal"
+                                  : selectedProperty.dealScore < 115
+                                  ? "Good deal"
+                                  : "Exceptional"
+                                : "Pending"}
+                            </span>
+                          </div>
                         </div>
+
+                        {/* Colored circle with raw score */}
+                       <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="ml-4 flex-shrink-0">
+                                <div
+                                  className={`
+                                    w-10 h-10 rounded-full flex items-center justify-center
+                                    text-white text-base font-semibold
+                                    ${
+                                      (selectedProperty.dealScore ?? 0) < 75
+                                        ? "bg-red-500"
+                                        : (selectedProperty.dealScore ?? 0) < 90
+                                        ? "bg-orange-500"
+                                        : (selectedProperty.dealScore ?? 0) < 100
+                                        ? "bg-yellow-400"
+                                        : (selectedProperty.dealScore ?? 0) < 115
+                                        ? "bg-green-500"
+                                        : "bg-green-700"
+                                    }
+                                  `}
+                                >
+                                  {selectedProperty.dealScore?.toFixed(0) ?? "—"}
+                                </div>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent className="!p-2">
+                              <ul className="space-y-1 text-xs">
+                                <li><strong>Exceptional:</strong> 115+</li>
+                                <li><strong>Good:</strong> 100–114</li>
+                                <li><strong>Fair:</strong> 90–99</li>
+                                <li><strong>Mediocre:</strong> 75–89</li>
+                                <li><strong>Bad:</strong> &lt;75</li>
+                              </ul>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                     </div>
 
@@ -823,7 +866,7 @@ export default function ListingsPage() {
                         href={selectedProperty.homeUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                        className="inline-flex items-center justify-center rounded-md bg-[#8A9969] px-4 py-2 text-sm font-medium text-white hover:bg-[#8A9969]/90"
                       >
                         View Original Listing
                       </a>

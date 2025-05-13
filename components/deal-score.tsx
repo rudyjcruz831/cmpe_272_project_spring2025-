@@ -64,9 +64,9 @@ export function DealScore({ encodedAddress, beds, baths, area, price, score, pre
   const priceDiff = getPriceDifference()
 
   return (
-    <div className="absolute bottom-0 right-4 flex items-center gap-2">
+    <div className="absolute bottom-5 right-6 flex items-center">
       {!loading && !error && currentPredictedPrice && (
-        <div className="text-xs text-gray-600 bg-card/90 px-2 py-1 rounded">
+        <div className="text-xs text-gray-600 bg-card/90 px-1 py-0.5 rounded">
           <div className="font-medium">
             Similar Listings: ${Math.round(currentPredictedPrice).toLocaleString()} | This Listing: ${price.toLocaleString()}
           </div>
@@ -75,9 +75,6 @@ export function DealScore({ encodedAddress, beds, baths, area, price, score, pre
               {priceDiff.isHigher ? '↓' : '↑'} ${priceDiff.amount} ({priceDiff.percent}%) difference
             </div>
           )}
-          <div className={`text-xs mt-1 ${currentScore === null ? 'text-gray-600' : 'text-white'} ${getScoreColor(currentScore)} px-2 py-0.5 rounded-full inline-block`}>
-            {getDealQuality(currentScore)}
-          </div>
         </div>
       )}
       <div 
