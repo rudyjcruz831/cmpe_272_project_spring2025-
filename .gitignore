@@ -38,3 +38,5 @@ next-env.d.ts
 __pycache__/
 *.pyc
 /model/personal_recs.py.next/
+*.pyc
+__pycache__/
