@@ -592,7 +592,7 @@ export default function ListingsPage() {
                 >
                   View Source →
                 </a>
-                <DealScore
+                 <DealScore
                   encodedAddress={property.encodedAddress}
                   beds={property.bedrooms}
                   baths={property.bathrooms}
