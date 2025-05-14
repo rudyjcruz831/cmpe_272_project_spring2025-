@@ -216,11 +216,13 @@ async def generate_recommendationsA(address_info: AddressInput):
     {user_profile_summary}
 
     For each recommended place, provide:
+    
     1. Place name
     2. Category (e.g., workplace, café, museum, park, tech hub, etc.)
-    3. A brief description of what makes it special 
+    3. A brief description of what makes it special
     4. Why it's relevant to this specific user's profile (interests, occupation, etc.)
     5. A relevance score from 1-10
+    6. Google maps link
 
     Format each place as a JSON object:
     {{
@@ -228,7 +230,8 @@ async def generate_recommendationsA(address_info: AddressInput):
       "category": "Category",
       "description": "Brief description",
       "relevance_score": 8,
-      "relevance_reason": "Why it's relevant"
+      "relevance_reason": "Why it's relevant",
+      "google_maps_link": "https://maps.google.com/?q=Place Name"
     }}
 
     Return all place recommendations as a JSON array of these objects.

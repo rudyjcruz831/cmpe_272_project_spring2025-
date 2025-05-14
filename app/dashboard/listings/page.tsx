@@ -45,6 +45,7 @@ interface Recommendation {
   relevance_reason: string;
   relevance_score: number;
   distance?: string;
+  google_maps_link?: string;
 }
 
 // Add utility cost estimation function
@@ -525,6 +526,17 @@ export default function ListingsPage() {
           return
         }
 
+        // Log each recommendation to check google_maps_link
+        console.log("Individual recommendations data:")
+        recommendationsData.forEach((rec: Recommendation, index: number) => {
+          console.log(`Recommendation ${index + 1}:`, {
+            name: rec.name,
+            category: rec.category,
+            google_maps_link: rec.google_maps_link,
+            has_maps_link: !!rec.google_maps_link
+          })
+        })
+
         console.log("Setting recommendations:", recommendationsData)
         setRecommendations(recommendationsData)
         setIsLoadingRecommendations(false)
@@ -881,11 +893,6 @@ export default function ListingsPage() {
                             ${selectedProperty.predictedPrice?.toLocaleString() ?? "—"}
                           </span>
 
-                          <span>This Listing:</span>
-                          <span className="text-right">
-                            ${selectedProperty.price.toLocaleString()}
-                          </span>
-
                           <span className="text-red-600">Difference:</span>
                           <span className="text-right text-red-600">
                             ↑ $
@@ -1144,52 +1151,84 @@ export default function ListingsPage() {
 
                 {!isLoadingRecommendations && !fetchError && recommendations && recommendations.length > 0 && (
                   <div className="space-y-6 animate-fadeIn">
-                    {recommendations.map((rec, index) => (
-                      <Card 
-                        key={index} 
-                        className="p-4 relative overflow-hidden transition-all duration-200 hover:shadow-lg"
-                      >
-                        {/* Relevance Score Badge */}
-                        <div className="absolute top-4 right-4">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-sm text-gray-500">Relevance</span>
-                            <div className="w-10 h-10 rounded-full bg-[#8A9969] flex items-center justify-center">
-                              <span className="text-white font-semibold">{rec.relevance_score}/10</span>
+                    {(recommendations as Recommendation[]).map((rec: Recommendation, index: number) => {
+                      console.log(`Rendering recommendation ${index}:`, rec)
+                      return (
+                        <Card 
+                          key={index} 
+                          className="p-4 relative overflow-hidden transition-all duration-200 hover:shadow-lg"
+                        >
+                          {/* Relevance Score Badge */}
+                          <div className="absolute top-4 right-4">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-sm text-gray-500">Relevance</span>
+                              <div className="w-10 h-10 rounded-full bg-[#8A9969] flex items-center justify-center">
+                                <span className="text-white font-semibold">{rec.relevance_score}/10</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div className="space-y-3 pr-16">
-                          {/* Name and Category */}
-                          <div>
-                            <h3 className="text-lg font-semibold">{rec.name}</h3>
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className="px-2 py-1 bg-[#8A9969]/10 text-[#8A9969] rounded-full text-sm">
-                                {rec.category}
-                              </span>
-                              {rec.distance && (
-                                <span className="text-sm text-gray-500">
-                                  {rec.distance}
+                          <div className="space-y-3 pr-16">
+                            {/* Name and Category */}
+                            <div>
+                              <h3 className="text-lg font-semibold">{rec.name}</h3>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="px-2 py-1 bg-[#8A9969]/10 text-[#8A9969] rounded-full text-sm">
+                                  {rec.category}
                                 </span>
-                              )}
+                                {rec.distance && (
+                                  <span className="text-sm text-gray-500">
+                                    {rec.distance}
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                          </div>
 
-                          {/* Description */}
-                          <div className="text-sm text-gray-600">
-                            <p>{rec.description}</p>
-                          </div>
+                            {/* Description */}
+                            <div className="text-sm text-gray-600">
+                              <p>{rec.description}</p>
+                            </div>
 
-                          {/* Relevance Reason */}
-                          <div className="bg-gray-50 p-3 rounded-md">
-                            <p className="text-sm">
-                              <span className="font-medium">Why it's relevant: </span>
-                              {rec.relevance_reason}
-                            </p>
+                            {/* Relevance Reason */}
+                            <div className="bg-gray-50 p-3 rounded-md">
+                              <p className="text-sm">
+                                <span className="font-medium">Why it's relevant: </span>
+                                {rec.relevance_reason}
+                              </p>
+                            </div>
+
+                            {/* Maps Link */}
+                            {rec.google_maps_link && (
+                              <div className="mt-3 pt-2 border-t">
+                                <a
+                                  href={rec.google_maps_link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-2 text-sm text-[#8A9969] hover:text-[#8A9969]/80 transition-colors"
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="lucide lucide-map-pin"
+                                  >
+                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                                    <circle cx="12" cy="10" r="3" />
+                                  </svg>
+                                  View on Google Maps
+                                </a>
+                              </div>
+                            )}
                           </div>
-                        </div>
-                      </Card>
-                    ))}
+                        </Card>
+                      )
+                    })}
                   </div>
                 )}
               </div>
