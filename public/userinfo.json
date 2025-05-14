@@ -1,0 +1,12 @@
+{
+    "occupation": "student",
+    "company": "tech",
+    "interests": [
+        "tech"
+    ],
+    "transportation": [
+        "walk"
+    ],
+    "completed": true,
+    "serverId": null
+} 

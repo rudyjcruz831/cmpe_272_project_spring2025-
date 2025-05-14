@@ -6,20 +6,11 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-from webdriver_manager.chrome import ChromeDriverManager
+
 from shutil import which
-
 SELENIUM_DRIVER_NAME = 'chrome'  # Use 'firefox' if preferred
-SELENIUM_DRIVER_EXECUTABLE_PATH = ChromeDriverManager().install()
-
-# SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')  # Auto-detect WebDriver
-SELENIUM_DRIVER_ARGUMENTS = [
-    '--headless=new',
-    '--no-sandbox',
-    '--disable-gpu',
-    '--disable-dev-shm-usage',
-]
-# SELENIUM_DRIVER_ARGUMENTS=['--headless']  # Run in headless mode (no GUI)
+SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')  # Auto-detect WebDriver
+SELENIUM_DRIVER_ARGUMENTS=['--headless']  # Run in headless mode (no GUI)
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy_selenium.SeleniumMiddleware': 800  # Enable Selenium middleware

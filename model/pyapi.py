@@ -261,15 +261,9 @@ async def generate_recommendationsA(address_info: AddressInput):
             content = response.json()["choices"][0]["message"]["content"]
 
             parsed_content = json.loads(content)
-            places = parsed_content if isinstance(parsed_content, list) else parsed_content.get("places", [])
-
-            if not places:
-                raise HTTPException(status_code=500, detail="No recommendations found")
-
-            return {
-                "places": places,
-                "user_summary": "Recommendations based on your profile and address."
-            }
+            print(parsed_content, "parsed_content")
+            #Ensure parsed_content is a dictionary with a "recommendations" key
+            return parsed_content
 
     except httpx.TimeoutException:
         logger.error("OpenAI API request timed out")

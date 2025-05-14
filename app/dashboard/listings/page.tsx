@@ -38,6 +38,15 @@ interface PropertyWithScore extends Property {
   percentDifference?: number | null;
 }
 
+interface Recommendation {
+  name: string;
+  category: string;
+  description: string;
+  relevance_reason: string;
+  relevance_score: number;
+  distance?: string;
+}
+
 // Add utility cost estimation function
 const getUtilityEstimate = (squareFootage: number): { min: number; max: number } => {
   if (squareFootage < 500) return { min: 150, max: 250 }
@@ -61,6 +70,12 @@ export default function ListingsPage() {
   const [sortBy, setSortBy] = useState<string>("")
   const [isLoadingScores, setIsLoadingScores] = useState(true)
   const [selectedProperty, setSelectedProperty] = useState<PropertyWithScore | null>(null)
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([])
+  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false)
+  const [showRecommendations, setShowRecommendations] = useState(false)
+  const [userInfo, setUserInfo] = useState<any>(null)
+  const [isLoadingUserInfo, setIsLoadingUserInfo] = useState(true)
+  const [fetchError, setFetchError] = useState<string | null>(null)
 
   // Add initial load effect
   useEffect(() => {
@@ -70,6 +85,45 @@ export default function ListingsPage() {
       console.error("Error in initial score calculation:", err)
     })
   }, []) // Empty dependency array means this runs once on mount
+
+  // Add effect to load user info
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      setIsLoadingUserInfo(true)
+      try {
+        // First try the public directory
+        let response = await fetch("/userinfo.json")
+        
+        // If not in public, try the model directory
+        if (!response.ok) {
+          response = await fetch("/model/userinfo.json")
+        }
+        
+        if (!response.ok) {
+          console.error("Failed to load user info. Status:", response.status)
+          throw new Error(`Failed to load user info. Status: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        console.log("Successfully loaded user info:", data)
+        setUserInfo(data)
+      } catch (error) {
+        console.error("Error loading user info:", error)
+        // Set a default user info if loading fails
+        setUserInfo({
+          occupation: "student",
+          company: "tech",
+          interests: ["tech"],
+          transportation: ["walk"],
+          completed: true,
+          serverId: null
+        })
+      } finally {
+        setIsLoadingUserInfo(false)
+      }
+    }
+    loadUserInfo()
+  }, [])
 
   const resetFilters = () => {
     setPriceRange([0, 10000])
@@ -377,6 +431,137 @@ export default function ListingsPage() {
     testListingScore().catch(console.error)
   }, [])
 
+  // Add function to fetch recommendations
+  const fetchRecommendations = async (encodedAddress: number) => {
+    if (!userInfo) {
+      console.error("User info not loaded")
+      return
+    }
+
+    setIsLoadingRecommendations(true)
+    setShowRecommendations(true)
+    setRecommendations([]) // Clear previous recommendations
+    setFetchError(null) // Clear any previous errors
+
+    const maxRetries = 2
+    let currentTry = 0
+
+    while (currentTry <= maxRetries) {
+      try {
+        // Get the address from the selected property
+        const address = selectedProperty?.title || ""
+        console.log(`Attempt ${currentTry + 1}/${maxRetries + 1}: Sending recommendations request for address:`, address)
+
+        const requestBody = {
+          address: address,
+          radius: 5000 // Default radius in meters
+        }
+        console.log("Request body:", requestBody)
+
+        const response = await fetch("http://127.0.0.1:8000/recommendations", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        })
+
+        const responseText = await response.text()
+        console.log("Raw API response:", responseText)
+
+        if (!response.ok) {
+          // Try to parse the error response
+          let errorDetail = responseText
+          try {
+            const errorJson = JSON.parse(responseText)
+            errorDetail = errorJson.detail || responseText
+          } catch (e) {
+            // If parsing fails, use the raw text
+          }
+
+          // Handle specific error cases
+          if (errorDetail.includes("No recommendations found") || errorDetail.includes("Could not generate place recommendations")) {
+            setFetchError("We couldn't find any recommendations for this location. Try adjusting the search radius.")
+            setIsLoadingRecommendations(false)
+            return
+          }
+          
+          // Handle timeout errors
+          if (errorDetail.includes("504") && errorDetail.includes("timeout") && currentTry < maxRetries) {
+            currentTry++
+            console.log(`Retry ${currentTry} due to timeout...`)
+            continue
+          }
+          
+          throw new Error(errorDetail)
+        }
+
+        // Try to parse the successful response
+        let data
+        try {
+          data = JSON.parse(responseText)
+          console.log("Parsed response data:", data)
+        } catch (e) {
+          console.error("Failed to parse API response:", e)
+          throw new Error("Invalid response format from server")
+        }
+
+        // Handle different response formats
+        let recommendationsData = []
+        if (data.recommendations && Array.isArray(data.recommendations)) {
+          recommendationsData = data.recommendations
+        } else if (data.places && Array.isArray(data.places)) {
+          recommendationsData = data.places
+        } else if (Array.isArray(data)) {
+          recommendationsData = data
+        } else {
+          console.error("Unexpected response format:", data)
+          throw new Error("Invalid response format")
+        }
+
+        if (recommendationsData.length === 0) {
+          setFetchError("No recommendations found for this location.")
+          setIsLoadingRecommendations(false)
+          return
+        }
+
+        console.log("Setting recommendations:", recommendationsData)
+        setRecommendations(recommendationsData)
+        setIsLoadingRecommendations(false)
+        setShowRecommendations(true)
+        console.log("States after setting:", {
+          recommendations: recommendationsData,
+          isLoading: false,
+          showRecommendations: true,
+          error: null
+        })
+        return // Success! Exit the retry loop
+      } catch (error) {
+        console.error("Error fetching recommendations:", error)
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+        
+        if (currentTry === maxRetries) {
+          setFetchError(
+            errorMessage.includes("504") && errorMessage.includes("timeout")
+              ? "The request is taking longer than expected. Please try again."
+              : errorMessage.includes("No recommendations found") || errorMessage.includes("Could not generate")
+              ? "We couldn't find any recommendations for this location. Try adjusting the search radius."
+              : errorMessage.includes("Unexpected response format") || errorMessage.includes("Invalid response format")
+              ? "There was an issue processing the recommendations. Please try again."
+              : "Failed to fetch recommendations. Please try again."
+          )
+          setRecommendations([])
+          setIsLoadingRecommendations(false)
+        } else {
+          currentTry++
+          console.log(`Retry ${currentTry} after error...`)
+          await new Promise(resolve => setTimeout(resolve, 1000 * currentTry)) // Exponential backoff
+          continue
+        }
+      }
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -637,6 +822,26 @@ export default function ListingsPage() {
                             ${Math.round(selectedProperty.price / (roommates + 1)).toLocaleString()}/mo per person
                           </p>
                         )}
+                        <Button
+                          variant="outline"
+                          className="w-25 mt-2"
+                          onClick={() => fetchRecommendations(selectedProperty.encodedAddress)}
+                          disabled={isLoadingRecommendations || isLoadingUserInfo}
+                        >
+                          {isLoadingUserInfo ? (
+                            <span className="flex items-center gap-2">
+                              <RotateCw className="h-4 w-4 animate-spin" />
+                              Loading...
+                            </span>
+                          ) : isLoadingRecommendations ? (
+                            <span className="flex items-center gap-2">
+                              <RotateCw className="h-4 w-4 animate-spin" />
+                              Finding Places...
+                            </span>
+                          ) : (
+                            "Nearby Recommendations"
+                          )}
+                        </Button>
                       </div>
                       
                       <div className="space-y-2">
@@ -876,6 +1081,118 @@ export default function ListingsPage() {
                   </div>
                 </>
               )}
+            </SheetContent>
+          </Sheet>
+
+          {/* Recommendations Sheet */}
+          <Sheet open={showRecommendations} onOpenChange={setShowRecommendations}>
+            <SheetContent 
+              side="left" 
+              className="w-full sm:max-w-xl overflow-y-auto"
+            >
+              <SheetHeader>
+                <SheetTitle>Nearby Points of Interest</SheetTitle>
+                <SheetDescription>
+                  {isLoadingRecommendations 
+                    ? "Finding interesting places nearby..."
+                    : recommendations && recommendations.length > 0
+                    ? `Found ${recommendations.length} recommended places near ${selectedProperty?.title}`
+                    : "No recommendations found"
+                  }
+                </SheetDescription>
+              </SheetHeader>
+
+              <div className="mt-6">
+                {isLoadingRecommendations && (
+                  <div className="flex flex-col items-center justify-center min-h-[400px] space-y-6">
+                    {/* Animated loading spinner */}
+                    <div className="relative">
+                      <div className="w-16 h-16 border-4 border-[#8A9969] border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-16 h-16 border-4 border-[#8A9969]/30 rounded-full absolute top-0"></div>
+                    </div>
+                    {/* Loading messages */}
+                    <div className="text-center space-y-3">
+                      <p className="text-lg font-medium text-[#8A9969]">Finding Recommendations</p>
+                      <div className="space-y-1 text-sm text-gray-500">
+                        <p>• Analyzing location data</p>
+                        <p>• Checking nearby points of interest</p>
+                        <p>• Matching with your preferences</p>
+                        <p className="text-xs italic mt-2">This may take a few moments...</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {!isLoadingRecommendations && fetchError && (
+                  <div className="text-center text-gray-500 py-8">
+                    <p className="text-lg font-medium text-red-500 mb-2">No Results Found</p>
+                    <p className="mb-4">{fetchError}</p>
+                    <div className="space-y-2">
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => fetchRecommendations(selectedProperty?.encodedAddress || 0)}
+                      >
+                        Try Again
+                      </Button>
+                      <p className="text-sm text-gray-500 mt-2">
+                        Tip: The recommendations system works best with complete addresses
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {!isLoadingRecommendations && !fetchError && recommendations && recommendations.length > 0 && (
+                  <div className="space-y-6 animate-fadeIn">
+                    {recommendations.map((rec, index) => (
+                      <Card 
+                        key={index} 
+                        className="p-4 relative overflow-hidden transition-all duration-200 hover:shadow-lg"
+                      >
+                        {/* Relevance Score Badge */}
+                        <div className="absolute top-4 right-4">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm text-gray-500">Relevance</span>
+                            <div className="w-10 h-10 rounded-full bg-[#8A9969] flex items-center justify-center">
+                              <span className="text-white font-semibold">{rec.relevance_score}/10</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3 pr-16">
+                          {/* Name and Category */}
+                          <div>
+                            <h3 className="text-lg font-semibold">{rec.name}</h3>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="px-2 py-1 bg-[#8A9969]/10 text-[#8A9969] rounded-full text-sm">
+                                {rec.category}
+                              </span>
+                              {rec.distance && (
+                                <span className="text-sm text-gray-500">
+                                  {rec.distance}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Description */}
+                          <div className="text-sm text-gray-600">
+                            <p>{rec.description}</p>
+                          </div>
+
+                          {/* Relevance Reason */}
+                          <div className="bg-gray-50 p-3 rounded-md">
+                            <p className="text-sm">
+                              <span className="font-medium">Why it's relevant: </span>
+                              {rec.relevance_reason}
+                            </p>
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
             </SheetContent>
           </Sheet>
 
