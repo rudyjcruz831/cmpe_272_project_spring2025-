@@ -33,3 +33,7 @@ next-env.d.ts
 
 #model api
 /model/personal_recs.py
+
+# Python
+__pycache__/
+*.pyc

@@ -1,0 +1,264 @@
+[33mcommit f198bb54f4c09344187a6515595b187857ad0950[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: Guna <gvengalasetti@gmail.com>
+Date:   Tue May 13 21:27:32 2025 -0700
+
+    makng fixes to reccs
+
+[33mcommit 6ae7b6a10c8389bb960940a248635ed93885337a[m[33m ([m[1;32mguna_reccomendations_list[m[33m)[m
+Author: Guna <gvengalasetti@gmail.com>
+Date:   Mon May 12 11:48:03 2025 -0700
+
+    reccomendations, with openai key, with save to local storage file, and testing component front(dud - needs to be edited, but the backend py method is done)
+
+[33mcommit 7a41cccd3b96076f6f23c6dc94126bc20c5d5180[m
+Merge: 0420ffd f186b7e
+Author: Guna <gvengalasetti@gmail.com>
+Date:   Sun May 11 18:23:19 2025 -0700
+
+    merge conflict fix + remove next from gitignore
+
+[33mcommit f186b7ee42e5786f7be84c5cc4784f5cf02e0ed8[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Fri May 9 19:40:22 2025 -0700
+
+    fixed edge cases with model deal score calculations and redfinscraping
+
+[33mcommit f7de5da7a17e84ce37cbfb50178e221ff7da10bf[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Fri May 9 16:43:01 2025 -0700
+
+    new flyout menu in lisitngs page, fixed issues with search not working after loading was implemented
+
+[33mcommit 1ba9b757a7682fea4abee7cfa562b5e75917e3fa[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Fri May 9 15:43:44 2025 -0700
+
+    added small change to highlight updated roommate price, updated rommmate filter to ' 1 + ' [# of roommates]
+
+[33mcommit 02d8ea17208b9a4f941e88cb6608edede2d3491a[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Fri May 9 15:33:46 2025 -0700
+
+    added some functionality to the search page to make it feel more engaging
+
+[33mcommit bcc493f52f2203993c13f2da265c56f259baae5b[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Fri May 9 14:47:05 2025 -0700
+
+    fixing edge cases for scraping and model deal score methodology
+
+[33mcommit ea8ca516eb56ccaa599efe139a941026b13bda5e[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Fri May 9 14:16:10 2025 -0700
+
+    added sorting for deal scores, updated scraper to handle edge cases, updated deal score to handle floats
+
+[33mcommit 8dc9c8849f1d6ffb5b29fb78b711267e695c0ac7[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Thu May 8 20:06:37 2025 -0700
+
+    added sort by price low to high and vice versa
+
+[33mcommit 72b53510cbcab4ebd3d94680c3636f5aab26217e[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Thu May 8 19:58:30 2025 -0700
+
+    added functionality to display more on a single page
+
+[33mcommit be2639253580a33224b377c8d2a92c412446eeed[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Thu May 8 19:51:33 2025 -0700
+
+    added reset filter functionality
+
+[33mcommit a1b9cff257857d3ffb473e6be4f6ffaba266be7d[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Thu May 8 19:36:55 2025 -0700
+
+    changes to the dealscore for more visibility
+
+[33mcommit 0420ffd5d2835a2e76b286eb4173a5c6236c655a[m
+Merge: 3ee60a1 33ce693
+Author: Guna <gvengalasetti@gmail.com>
+Date:   Thu May 8 18:09:52 2025 -0700
+
+    Remove .next directory from version control
+
+[33mcommit 3ee60a14d35ffb1fe133d369e4aa87999e0433f5[m
+Author: Guna <gvengalasetti@gmail.com>
+Date:   Thu May 8 18:06:52 2025 -0700
+
+    working version for guna
+
+[33mcommit 33ce693c4ae322592ebffbeb04cf996e1a297cfa[m[33m ([m[1;31morigin/main_dev[m[33m)[m
+Merge: e01d3eb 3e86fbe
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Thu May 8 18:00:41 2025 -0700
+
+    Merge branch 'main' of https://github.com/rudyjcruz831/cmpe_272_project_spring2025-
+
+[33mcommit e01d3ebb52dc9aed5a5a852e2a01daf53d7281ec[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Thu May 8 17:46:32 2025 -0700
+
+    adding missing files
+
+[33mcommit 3e86fbe7c4185f3e7a09e3617e1f662300a28547[m
+Author: Arman Sandher <sandherarman@yahoo.com>
+Date:   Thu May 8 17:43:46 2025 -0700
+
+    Add files via upload
+
+[33mcommit a11244890ec236e5c0f6d3e115313154aa7103d0[m
+Author: Arman Sandher <sandherarman@yahoo.com>
+Date:   Thu May 8 17:43:19 2025 -0700
+
+    Delete dashboard directory
+
+[33mcommit 4279d9f468d9a50a40d29fcd6759b5866a01a11a[m
+Author: Arman Sandher <sandherarman@yahoo.com>
+Date:   Thu May 8 17:37:21 2025 -0700
+
+    teammate having trouble. uploading from local.
+
+[33mcommit f34edab2f8ffa5c5cd004b96d07093178e271d9d[m
+Author: Arman Sandher <sandherarman@yahoo.com>
+Date:   Thu May 8 17:35:48 2025 -0700
+
+    Add files via upload
+
+[33mcommit 45b3c7738d8a7d06683a83e7b785a5991fa54357[m
+Author: Arman Sandher <sandherarman@yahoo.com>
+Date:   Thu May 8 17:29:01 2025 -0700
+
+    Add files via upload
+
+[33mcommit d67d70a75107bedab0617e0c7c3d60dcaee95921[m
+Author: Arman Sandher <sandherarman@yahoo.com>
+Date:   Thu May 8 17:26:02 2025 -0700
+
+    Add files via upload
+
+[33mcommit 210a8826453b8fa6ef1108691e01b4e8fe4d2c2e[m
+Author: Arman Sandher <sandherarman@yahoo.com>
+Date:   Thu May 8 17:24:05 2025 -0700
+
+    Add files via upload
+
+[33mcommit 61360cca557d0115a9943c4e623937b64bd2085a[m
+Author: Arman Sandher <sandherarman@yahoo.com>
+Date:   Thu May 8 17:22:51 2025 -0700
+
+    Add files via upload
+
+[33mcommit 82ff18c38b953dc18fa198583fd085949281f772[m
+Author: Arman Sandher <sandherarman@yahoo.com>
+Date:   Thu May 8 17:20:11 2025 -0700
+
+    Add files via upload
+
+[33mcommit a1de3711974fc9250848e9074d345ea48e9f86b3[m
+Author: Arman Sandher <sandherarman@yahoo.com>
+Date:   Thu May 8 17:19:30 2025 -0700
+
+    uploading changes
+
+[33mcommit c9b5bff8ae7a76c09a7aa7fa9ea00e44baaba6c9[m
+Author: Arman Sandher <sandherarman@yahoo.com>
+Date:   Thu May 8 17:18:28 2025 -0700
+
+    model upload
+
+[33mcommit 2dfe54676a3f11358f3d2fdf20649ffd05f75d1e[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Thu May 8 17:15:42 2025 -0700
+
+    ensuring changes are set
+
+[33mcommit c2159f664e11912583213c85220cf1d37e9c960e[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Thu May 8 17:13:22 2025 -0700
+
+    ensuring changes are set
+
+[33mcommit 982a9f7f7650874cb8385a2fd7141efc4eafada0[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Thu May 8 17:12:28 2025 -0700
+
+    ensuring changes are set
+
+[33mcommit c8bf0a8dab9f5aae3fc87a0f9828b060f09635a3[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Wed May 7 03:13:26 2025 -0700
+
+    adding circles and legends to listings. the circles indicate how good of a deal it is
+
+[33mcommit 7f2f7c754648eab05259424a42049d38a581478b[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Wed May 7 00:47:39 2025 -0700
+
+    p8
+
+[33mcommit 8072bbcb4b1699d13aec45fa9ac2433ba09c03af[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Wed May 7 00:46:39 2025 -0700
+
+    p7
+
+[33mcommit 0a89ce91ecc68500b6407a0f4e9f0488eeae939e[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Wed May 7 00:45:12 2025 -0700
+
+    pt6
+
+[33mcommit 71733ac1dfc45884c0864f2431b72a1520820e61[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Wed May 7 00:44:27 2025 -0700
+
+    pt5
+
+[33mcommit 5acdce4620e22215a83750f1f35003c0d91defc5[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Wed May 7 00:43:26 2025 -0700
+
+    pt4
+
+[33mcommit e0378c18523b32e156561f6f424c8c6da5540e71[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Wed May 7 00:42:47 2025 -0700
+
+    pt3
+
+[33mcommit 6a7f25feb78e09215b62fb7613312143f3d01513[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Wed May 7 00:41:50 2025 -0700
+
+    moving files manually2
+
+[33mcommit 5925b66f14a6617372c44fd5cff52e4e7e74fac8[m
+Author: toon663 <sandherarman@yahoo.com>
+Date:   Wed May 7 00:40:55 2025 -0700
+
+    moving files manually
+
+[33mcommit 198e891d09fa2fdfdbe92add6b56fc46125f8bbe[m
+Author: Guna V <99620678+gvengalasetti@users.noreply.github.com>
+Date:   Mon May 5 21:33:39 2025 -0700
+
+    files you need to run the servers
+    
+    - py server
+    - go server (replace with actual)
+    - model integration
+
+[33mcommit 8b3463c598d1072f1a190bc0ea5cfddbc630e900[m
+Author: Guna V <99620678+gvengalasetti@users.noreply.github.com>
+Date:   Mon May 5 02:22:02 2025 -0700
+
+    Labels as Well Included + Progress
+
+[33mcommit 04b0a6e99154e78ef3bdc1d7ae3cf96d3d8343bb[m
+Author: Guna V <99620678+gvengalasetti@users.noreply.github.com>
+Date:   Mon May 5 02:18:04 2025 -0700
+
+    Official Model - Implementation (XGboost) + Model
