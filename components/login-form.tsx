@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
-export function LoginForm({ redirectTo = "/dashboard" }: { redirectTo?: string }) {
+export function LoginForm({ redirectTo = "/dashboard/questionaire" }: { redirectTo?: string }) {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")

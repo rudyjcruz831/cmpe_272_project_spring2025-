@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Check, User, Briefcase, Heart, Book, Music, Film, Globe, Code, Camera, Coffee, ArrowLeft, ArrowRight, MapPin, Bus, Car, Train, Bike, Utensils, DollarSign, ShoppingBag, Dumbbell, Ticket, Palette, Moon, Gamepad, Calendar, Download, Save, Send } from 'lucide-react';
 
 // Define the form data type for TypeScript
@@ -15,6 +16,7 @@ interface FormData {
 
 // Main component
 export default function UserProfileForm() {
+  const router = useRouter();
   // States to track current section and selections
   const [currentSection, setCurrentSection] = useState<string>('occupation');
   const [formData, setFormData] = useState<FormData>({
@@ -169,11 +171,19 @@ export default function UserProfileForm() {
   };
 
   // Handle form completion
-  const completeProfile = () => {
+  const completeProfile = async () => {
     const updatedFormData = { ...formData, completed: true };
     setFormData(updatedFormData);
     saveToLocalStorage(updatedFormData);
     setCurrentSection('summary');
+    
+    // Submit the form data
+    await submitFormData();
+    
+    // Redirect to dashboard after a short delay
+    setTimeout(() => {
+      router.push('/dashboard');
+    }, 1500); // 1.5 second delay to show the success message
   };
 
   // Submit form data to server

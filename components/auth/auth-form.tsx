@@ -45,7 +45,7 @@ export function AuthForm() {
       }
 
       router.refresh()
-      router.push('/dashboard')
+      router.push('/dashboard/questionaire')
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {

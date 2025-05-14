@@ -1,14 +1,14 @@
 {
     "occupation": "student",
-    "company": "education",
+    "company": "tech",
     "interests": [
-        "fitness",
-        "art",
+        "tech",
+        "food",
         "nightlife"
     ],
     "transportation": [
-        "walk",
-        "bicycle"
+        "car",
+        "walk"
     ],
     "completed": false,
     "serverId": null
