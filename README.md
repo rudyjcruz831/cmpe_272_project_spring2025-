@@ -1,6 +1,7 @@
 # Welcome to AffordAbode!
 cmpe_272_project_spring2025-
 Project for Enterprise Software Engineering Platforms Spring 2025
+
 http://ec2-54-153-109-88.us-west-1.compute.amazonaws.com:3000/
 
 ## Table of Contents
